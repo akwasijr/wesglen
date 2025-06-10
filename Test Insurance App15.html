@@ -1,0 +1,2425 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WestGlen Claims Portal - Claims Management</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- DaisyUI CDN (built on Tailwind CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome for icons (similar to Dynamics 365 icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - will be dynamically loaded via JS, but including a default for initial load -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" data-initial="true">
+    <style>
+        /* Custom CSS Variables for Theming */
+        :root {
+            --primary-color: #0078d4; /* Default Tailwind blue-600 */
+            --secondary-color: #4a4a4a; /* Default secondary dark gray */
+            --tertiary-color: #8c8c8c; /* Default tertiary light gray */
+            --success-color: #107c10; /* Default green */
+            --warning-color: #ffb900; /* Default yellow */
+            --danger-color: #dc2626; /* Default red-600 */
+
+            --button-border-radius: 0.375rem; /* rounded-md */
+            --field-border-radius: 0.375rem; /* rounded-md */
+
+            --font-family: 'Inter', sans-serif;
+            --box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Default shadow-md */
+        }
+
+        /* Apply custom variables */
+        body {
+            font-family: var(--font-family);
+        }
+
+        /* Base colors for light and dark mode */
+        html[data-theme="light"] body {
+            background-color: #f3f2f1; /* Lighter gray background */
+            color: #323130; /* Darker text for better contrast */
+        }
+
+        html[data-theme="dark"] body {
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0; /* Lighter text for dark contrast */
+        }
+
+        /* Override DaisyUI/Tailwind for custom colors */
+        /* Buttons that typically use primary color */
+        .btn-primary,
+        .bg-blue-600, /* Used directly in some HTML for primary buttons */
+        .hover\:bg-blue-700:hover { /* Used directly in some HTML for primary buttons */
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important; /* Ensure text color is white for primary buttons */
+        }
+        .btn-primary:hover {
+            background-color: color-mix(in srgb, var(--primary-color) 85%, black) !important; /* Slightly darker on hover */
+            border-color: color-mix(in srgb, var(--primary-color) 85%, black) !important;
+        }
+
+        /* Buttons that typically use secondary color (e.g., grey buttons) */
+        .btn-secondary {
+            background-color: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+            color: white !important; /* Ensure text color is white for secondary buttons */
+        }
+        .btn-secondary:hover {
+            background-color: color-mix(in srgb, var(--secondary-color) 85%, black) !important;
+            border-color: color-mix(in srgb, var(--secondary-color) 85%, black) !important;
+        }
+
+        /* For success/warning/danger buttons */
+        .btn-success { background-color: var(--success-color) !important; border-color: var(--success-color) !important; color: white !important;}
+        .btn-warning { background-color: var(--warning-color) !important; border-color: var(--warning-color) !important; color: white !important;}
+        .btn-error { background-color: var(--danger-color) !important; border-color: var(--danger-color) !important; color: white !important;}
+
+        /* Focus rings for inputs */
+        .focus\:ring-blue-500:focus { --tw-ring-color: var(--primary-color) !important; }
+        .focus\:border-blue-500:focus { border-color: var(--primary-color) !important; }
+
+        /* Text colors using custom variables (e.g., links, icons) */
+        .text-blue-600, .hover\:text-blue-700:hover { color: var(--primary-color) !important; }
+        /* Specific elements like Copilot SVG icon - fill is directly on SVG now */
+        .info-snippet-content ul li .info-icon { color: var(--primary-color) !important; }
+        .info-snippet-content .info-message-box .icon { color: var(--primary-color) !important; }
+
+        /* Sidebar Logo Text Color */
+        #sidebar-logo-text {
+            color: var(--primary-color) !important;
+        }
+
+        /* Border radius for buttons and inputs */
+        .btn {
+            border-radius: var(--button-border-radius) !important;
+        }
+        .input, .textarea, select {
+            border-radius: var(--field-border-radius) !important;
+        }
+        /* Override specific rounded classes for consistency with input shapes and general containers */
+        .rounded-md, .rounded-lg { /* These classes are used for cards and other containers as well, not just inputs */
+            border-radius: var(--field-border-radius) !important;
+        }
+
+
+        /* Apply shadow variable */
+        .shadow-sm, .shadow-md, .shadow-lg,
+        .bg-white.shadow-lg, .info-snippet-card, .bg-white.shadow-md,
+        .rounded-md.shadow-sm { /* For inputs and similar elements */
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #faf9f8; /* Lighter track */
+            border-radius: 10px;
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-track {
+            background: #2a2a2a; /* Darker track for dark mode */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c8c6c4; /* Softer thumb */
+            border-radius: 10px;
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+            background: #555; /* Darker thumb for dark mode */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #979593; /* Darker hover */
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+            background: #777; /* Even darker hover for dark mode */
+        }
+
+        /* Hide pages by default, JavaScript will show them */
+        .page-content {
+            display: none;
+        }
+        /* Stepper hidden by default */
+        #fnol-stepper {
+            display: none;
+            border-radius: var(--field-border-radius); /* Use field radius for stepper container */
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            box-shadow: var(--box-shadow);
+        }
+        html[data-theme="dark"] #fnol-stepper {
+            border-color: #333;
+            background-color: #2a2a2a;
+        }
+        .custom-step {
+            flex: 1;
+            padding: 0.85rem 1.2rem;
+            text-align: center;
+            font-weight: 500;
+            color: #605e5c;
+            background-color: #f3f2f1;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border-right: 1px solid #edebe9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        html[data-theme="dark"] .custom-step {
+            background-color: #2a2a2a;
+            color: #ccc;
+            border-right: 1px solid #333;
+        }
+        .custom-step-number {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-right: 0.6rem;
+            color: var(--primary-color);
+            position: relative; /* For nested elements */
+        }
+        /* General Step Number/Icon/Checkmark Visibility */
+        .custom-step-number .step-digit { display: inline-block; } /* Default to show numbers */
+        .custom-step-number .step-icon { display: none; } /* Default to hide icons */
+        .custom-step-number .step-checkmark-core { display: none; } /* Default to hide checkmark */
+
+        /* Checkmark visibility for completed steps (general) */
+        .custom-step.completed .custom-step-number .step-digit,
+        .custom-step.completed .custom-step-number .step-icon {
+            display: none; /* Hide digit/icon when step is completed */
+        }
+        .custom-step.completed .custom-step-number .step-checkmark-core {
+            display: inline-block; /* Show checkmark when step is completed */
+            font-size: 1.15rem; /* Match number size */
+            color: white; /* Will be overridden by active/completed specific colors */
+        }
+
+        .custom-step-checkmark { /* Specific checkmark styling for default */
+            color: var(--success-color); /* Green color outside of .custom-step-number */
+            margin-left: 0.5rem;
+            font-size: 0.9rem;
+            position: static; /* Reset positioning */
+            transform: none;
+            display: inline-block; /* Ensure it's visible */
+        }
+
+        html[data-theme="dark"] .custom-step-number {
+            color: #ccc;
+        }
+        .custom-step:last-child {
+            border-right: none;
+        }
+        .custom-step.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+        .custom-step.active .custom-step-number {
+            color: #ffffff;
+        }
+        .custom-step.completed {
+            background-color: color-mix(in srgb, var(--primary-color) 10%, white);
+            color: color-mix(in srgb, var(--primary-color) 80%, black);
+            font-weight: 600;
+        }
+        html[data-theme="dark"] .custom-step.completed {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black);
+            color: color-mix(in srgb, var(--primary-color) 60%, white);
+        }
+        .custom-step.completed .custom-step-number {
+            color: var(--success-color);
+        }
+        .custom-step:not(.active):not(.completed):hover {
+            background-color: #edebe9;
+        }
+        html[data-theme="dark"] .custom-step:not(.active):not(.completed):hover {
+            background-color: #3a3a3a;
+        }
+
+        /* Stepper Style: Dots */
+        .stepper-style-dots .custom-step {
+            flex-direction: column; /* Stack number above text */
+        }
+        .stepper-style-dots .custom-step-number {
+            border-radius: 9999px; /* full rounded */
+            width: 2.2rem; /* slightly larger dot */
+            height: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--tertiary-color);
+            color: white;
+            font-size: 0.9rem;
+            margin-right: 0; /* Remove right margin for vertical stack */
+            margin-bottom: 0.4rem; /* Add bottom margin for vertical stack */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: none; /* No border for the dot itself */
+            position: relative; /* For checkmark positioning */
+        }
+        html[data-theme="dark"] .stepper-style-dots .custom-step-number {
+            background-color: #555;
+            color: #eee;
+        }
+        .stepper-style-dots .custom-step.active .custom-step-number {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color); /* Primary border for active dot */
+        }
+        .stepper-style-dots .custom-step.completed .custom-step-number {
+            background-color: var(--success-color);
+            color: white;
+        }
+        /* Checkmark within the dot for completed */
+        .stepper-style-dots .custom-step.completed .custom-step-number .step-checkmark-core {
+            display: inline-block; /* Show checkmark within the dot */
+            font-size: 1.15rem;
+            color: white;
+            position: static; /* Reset positioning */
+            transform: none;
+        }
+        .stepper-style-dots .custom-step.completed .custom-step-checkmark { /* Hide the external checkmark for dots */
+            display: none;
+        }
+
+
+        /* Stepper Style: Icons */
+        .stepper-style-icons .custom-step { flex-direction: column; }
+        .stepper-style-icons .custom-step-number .step-digit { display: none; }
+        .stepper-style-icons .custom-step-number .step-icon { display: inline-block; font-size: 1.8rem; }
+        .stepper-style-icons .custom-step-number {
+            margin-right: 0;
+            margin-bottom: 0.4rem;
+            background: none;
+            color: #605e5c;
+            border: none;
+            position: relative; /* For checkmark positioning */
+        }
+        html[data-theme="dark"] .stepper-style-icons .custom-step-number { color: #ccc; }
+        .stepper-style-icons .custom-step.active .custom-step-number { color: var(--primary-color); }
+        .stepper-style-icons .custom-step.completed .custom-step-number { color: var(--success-color); }
+        .stepper-style-icons .custom-step span:not(.custom-step-number) { font-size: 0.85rem; text-transform: uppercase; }
+        /* Checkmark within the icon container for completed */
+        .stepper-style-icons .custom-step.completed .custom-step-number .step-checkmark-core {
+            display: inline-block;
+            font-size: 1.15rem;
+            color: white; /* Assuming icon background changes to success color */
+            position: absolute; /* Position slightly offset if needed */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--success-color); /* Background for checkmark */
+            border-radius: 9999px;
+            padding: 0.2rem;
+        }
+        .stepper-style-icons .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external */
+
+
+        /* Stepper Style: Connecting Line */
+        .stepper-style-line .custom-step {
+            position: relative;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            justify-content: flex-start;
+            border-right: none;
+        }
+        .stepper-style-line .custom-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: calc(100% - 1.5rem);
+            width: 3rem;
+            height: 2px;
+            background-color: #e0e0e0;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        html[data-theme="dark"] .stepper-style-line .custom-step:not(:last-child)::after { background-color: #555; }
+        .stepper-style-line .custom-step-number {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9999px;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--tertiary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            z-index: 2;
+            border: 2px solid transparent;
+        }
+        html[data-theme="dark"] .stepper-style-line .custom-step-number { background-color: #555; color: #eee; }
+        .stepper-style-line .custom-step-number .step-digit { display: inline-block; }
+        .stepper-style-line .custom-step-number .step-icon { display: none; }
+        .stepper-style-line .custom-step.active .custom-step-number {
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .stepper-style-line .custom-step.completed .custom-step-number {
+            background-color: var(--success-color); /* Circle background */
+            color: white; /* Text color inside circle */
+        }
+        /* Checkmark within the circle for completed line style */
+        .stepper-style-line .custom-step.completed .custom-step-number .step-checkmark-core {
+            display: inline-block;
+            font-size: 1.15rem;
+            color: white; /* Ensure checkmark is white */
+            position: static;
+            transform: none;
+        }
+        .stepper-style-line .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external */
+
+
+        /* Stepper Style: Pill Buttons */
+        .stepper-style-pills .custom-step {
+            flex: 1;
+            padding: 0.7rem 1.5rem;
+            margin: 0 0.2rem;
+            border-radius: 9999px;
+            background-color: #e0e0e0;
+            color: #605e5c;
+            border: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            border-right: none;
+            display: flex; /* Ensure flex for content centering if needed */
+            align-items: center;
+            justify-content: center;
+        }
+        html[data-theme="dark"] .stepper-style-pills .custom-step { background-color: #3a3a3a; color: #eee; }
+        .stepper-style-pills .custom-step:first-child { margin-left: 0; }
+        .stepper-style-pills .custom-step:last-child { margin-right: 0; }
+        .stepper-style-pills .custom-step-number {
+            display: none; /* Hide numbers/icons in pills entirely */
+        }
+        .stepper-style-pills .custom-step.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .stepper-style-pills .custom-step.completed {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .stepper-style-pills .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external checkmark */
+        .stepper-style-pills .custom-step:not(.active):not(.completed):hover {
+            background-color: #c8c6c4;
+        }
+        html[data-theme="dark"] .stepper-style-pills .custom-step:not(.active):not(.completed):hover { background-color: #555; }
+
+        /* Radio Button and Toggle Switch Coloring */
+        /* For DaisyUI radio buttons (and checkboxes implicitly) */
+        .radio {
+            --chkbg: var(--primary-color); /* For the checked background */
+            --bc: #d1d5db; /* Default border color for unchecked */
+            border-color: var(--bc);
+        }
+        html[data-theme="dark"] .radio {
+            --bc: #555;
+        }
+        .radio:checked {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        /* Ensure the inner circle is white for contrast */
+        .radio:checked:after {
+            background-color: white !important;
+        }
+        .radio:focus {
+            outline-color: var(--primary-color); /* Ensure focus outline matches */
+        }
+
+        /* For DaisyUI toggle switches */
+        .toggle {
+            --tglbg: #d1d5db; /* Default unchecked background */
+            border-color: #d1d5db; /* Default unchecked border */
+        }
+        html[data-theme="dark"] .toggle {
+            --tglbg: #555; /* Dark mode unchecked background */
+            border-color: #777; /* Dark mode unchecked border */
+        }
+        .toggle:checked {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important; /* Ensure border also changes */
+        }
+        /* This is the actual 'thumb' part of the toggle */
+        .toggle:checked:after {
+            background-color: white !important; /* Ensure the thumb is white on colored background */
+        }
+        .toggle:focus {
+             outline-color: var(--primary-color); /* Ensure focus outline matches */
+        }
+
+        /* Top Header Bar */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        html[data-theme="dark"] header {
+            background-color: #2a2a2a;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        html[data-theme="dark"] header h1,
+        html[data-theme="dark"] header .text-gray-600,
+        html[data-theme="dark"] header .font-medium {
+            color: #eee;
+        }
+        html[data-theme="dark"] header .text-gray-500 {
+            color: #ccc;
+        }
+
+        /* Main Content Cards */
+        .bg-white.p-6.rounded-lg.shadow-sm.border.border-gray-200 {
+            background-color: #ffffff;
+            border-color: #e0e0e0;
+        }
+        html[data-theme="dark"] .bg-white.p-6.rounded-lg.shadow-sm.border.border-gray-200 {
+            background-color: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        html[data-theme="dark"] .bg-white h2,
+        html[data-theme="dark"] .bg-white h3,
+        html[data-theme="dark"] .bg-white label,
+        html[data-theme="dark"] .bg-white .text-gray-600,
+        html[data-theme="dark"] .bg-white .text-gray-700,
+        html[data-theme="dark"] .bg-white .text-gray-800,
+        html[data-theme="dark"] .bg-white .text-gray-900 {
+            color: #eee !important;
+        }
+        html[data-theme="dark"] .bg-white .text-gray-500 {
+            color: #ccc !important;
+        }
+
+        /* Table headers */
+        html[data-theme="dark"] table thead {
+            background-color: #3a3a3a;
+        }
+        html[data-theme="dark"] table th {
+            color: #ccc;
+        }
+        html[data-theme="dark"] table tbody tr {
+            background-color: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        html[data-theme="dark"] table td {
+            color: #eee;
+            border-color: #3a3a3a;
+        }
+        html[data-theme="dark"] table td .text-blue-600 {
+            color: var(--primary-color) !important;
+        }
+
+        /* Input fields and select boxes */
+        .input, .textarea, .select {
+            background-color: white;
+            border-color: #e0e0e0;
+        }
+        html[data-theme="dark"] .input, html[data-theme="dark"] .textarea, html[data-theme="dark"] .select {
+            background-color: #3a3a3a;
+            border-color: #555;
+            color: #eee;
+        }
+        html[data-theme="dark"] .input::placeholder, html[data-theme="dark"] .textarea::placeholder {
+            color: #bbb;
+        }
+
+        /* Generic grey backgrounds */
+        .bg-gray-50 { background-color: #f9fafb; }
+        html[data-theme="dark"] .bg-gray-50 { background-color: #3a3a3a; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        html[data-theme="dark"] .bg-gray-100 { background-color: #2a2a2a; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        html[data-theme="dark"] .bg-gray-200 { background-color: #555; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        html[data-theme="dark"] .border-gray-200 { border-color: #3a3a3a; }
+        .border-gray-300 { border-color: #d1d5db; }
+        html[data-theme="dark"] .border-gray-300 { border-color: #555; }
+
+
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex h-screen overflow-hidden">
+
+    <!-- Left Sidebar Navigation -->
+    <aside id="main-sidebar" class="w-64 bg-white shadow-lg p-4 flex flex-col overflow-y-auto">
+        <div id="sidebar-header-div" class="mb-6 flex items-center space-x-2">
+            <!-- Main App Logo (D365 placeholder) -->
+            <img id="sidebar-logo-img" src="https://placehold.co/32x32/0078D4/ffffff?text=D365" alt="Dynamics 365 Logo" class="rounded">
+            <span id="sidebar-logo-text" class="font-semibold text-lg text-blue-800">WestGlen Claims</span>
+        </div>
+
+        <nav class="flex-1">
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md" onclick="showPage('landing')">
+                        <i class="fas fa-home nav-link-icon mr-3"></i> <span class="nav-item-text">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-history nav-link-icon mr-3"></i> <span class="nav-item-text">Recent</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-thumbtack nav-link-icon mr-3"></i> <span class="nav-item-text">Pinned</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">My Work</span></div>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-tachometer-alt nav-link-icon mr-3"></i> <span class="nav-item-text">Dashboards</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-tasks nav-link-icon mr-3"></i> <span class="nav-item-text">Activities</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-handshake nav-link-icon mr-3"></i> <span class="nav-item-text">Deal Manager</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">Customers</span></div>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-building nav-link-icon mr-3"></i> <span class="nav-item-text">Accounts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-user-friends nav-link-icon mr-3"></i> <span class="nav-item-text">Contacts</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">Sales</span></div>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-lightbulb nav-link-icon mr-3"></i> <span class="nav-item-text">Leads</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 bg-blue-50 text-blue-700 font-medium rounded-md">
+                        <i class="fas fa-briefcase nav-link-icon mr-3"></i> <span class="nav-item-text">Opportunities</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                        <i class="fas fa-users nav-link-icon mr-3"></i> <span class="nav-item-text">Competitors</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">App Settings</span></div>
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md" onclick="showPage('settings')">
+                        <i class="fas fa-cog nav-link-icon mr-3"></i> <span class="nav-item-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Header Bar -->
+        <header class="bg-white shadow-md p-4 flex items-center justify-between z-10">
+            <div class="flex items-center space-x-4">
+                <button id="sidebar-toggle-btn" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800">Claims Management</h1>
+                <!-- Breadcrumbs (dynamic based on current page) -->
+                <nav class="text-sm text-gray-500 ml-4">
+                    <ol class="list-none p-0 inline-flex" id="breadcrumbs">
+                        <li class="flex items-center">
+                            <a href="#" class="text-blue-600 hover:text-blue-800" onclick="showPage('landing')">Home</a>
+                        </li>
+                        <!-- Intermediate breadcrumbs will be inserted here by JS -->
+                        <li class="flex items-center" id="current-page-breadcrumb-item">
+                            <i class="fas fa-chevron-right mx-2 text-xs"></i>
+                            <span class="text-gray-700" id="current-breadcrumb">First Notice of Loss</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+                <button class="text-gray-600 hover:text-blue-600 focus:outline-none" onclick="showPage('settings')">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                <button class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-bell text-lg"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <span class="font-medium text-gray-700">JD</span>
+                    <img src="https://placehold.co/32x32/E0E0E0/888888?text=JD" alt="User Avatar" class="w-8 h-8 rounded-full border border-gray-300">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Body -->
+        <main class="flex-1 overflow-y-auto p-6">
+
+            <!-- Stepper Component (Initially hidden) -->
+            <div class="w-full mb-6 bg-white shadow-sm border border-gray-200" id="fnol-stepper">
+                <div class="flex rounded-lg overflow-hidden" id="stepper-container">
+                    <div class="custom-step" data-step-id="policy" onclick="showPage('policy')">
+                        <span class="custom-step-number">
+                            <span class="step-digit">1</span>
+                            <i class="fas fa-file-invoice step-icon"></i>
+                            <i class="fas fa-check-circle step-checkmark-core"></i>
+                        </span>
+                        Policy
+                    </div>
+                    <div class="custom-step" data-step-id="details" onclick="showPage('details')">
+                        <span class="custom-step-number">
+                            <span class="step-digit">2</span>
+                            <i class="fas fa-info-circle step-icon"></i>
+                            <i class="fas fa-check-circle step-checkmark-core"></i>
+                        </span>
+                        Details
+                    </div>
+                    <div class="custom-step" data-step-id="documents" onclick="showPage('documents')">
+                        <span class="custom-step-number">
+                            <span class="step-digit">3</span>
+                            <i class="fas fa-folder-open step-icon"></i>
+                            <i class="fas fa-check-circle step-checkmark-core"></i>
+                        </span>
+                        Documents
+                    </div>
+                    <div class="custom-step" data-step-id="review" onclick="showPage('review')">
+                        <span class="custom-step-number">
+                            <span class="step-digit">4</span>
+                            <i class="fas fa-check-circle step-icon"></i>
+                            <i class="fas fa-check-circle step-checkmark-core"></i>
+                        </span>
+                        Review & Submit
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- FNOL Landing Page -->
+            <section id="landing-page" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column - Main FNOL Content -->
+                <div class="md:col-span-2 space-y-6">
+                    <!-- FNOL Introduction Card -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">First Notice of Loss</h2>
+                        <p class="text-gray-600 mb-4">Submit a new claim by providing details about the incident, policy information, and supporting documentation.</p>
+                        <button id="start-new-fnol-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                            <i class="fas fa-plus mr-2"></i> Start New FNOL
+                        </button>
+                    </div>
+
+                    <!-- Recent Claims Section -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Recent Claims</h3>
+                            <div class="relative">
+                                <input type="text" placeholder="Search claims..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm input">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-md">Claim ID</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Submitted</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-md">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Sample Data -->
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">CLM-2023-0042</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Approved</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 28, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Jun 01, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 focus:outline-none btn btn-ghost">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">CLM-2023-0039</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Review</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 22, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 30, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 focus:outline-none btn btn-ghost">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">CLM-2023-0035</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">Pending Info</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 15, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 26, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 focus:outline-none btn btn-ghost">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:text-blue-800 cursor-pointer">CLM-2023-0028</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Denied</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 05, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">May 20, 202-3</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 focus:outline-none btn btn-ghost">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav class="flex items-center justify-between pt-4" aria-label="Pagination">
+                            <div class="text-sm text-gray-700">
+                                Showing <span class="font-medium">4</span> of <span class="font-medium">12</span> claims
+                            </div>
+                            <div class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Previous</span>
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                                <a href="#" aria-current="page" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-blue-100">1</a>
+                                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">2</a>
+                                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">3</a>
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Next</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Right Column - Copilot Assistant (Info Snippet) -->
+                <div class="space-y-6">
+                    <!-- Copilot Assistant Card for Landing Page -->
+                    <div id="copilot-info-landing" class="info-snippet-card">
+                        <div class="info-snippet-header">
+                            <!-- SVG logo for AI -->
+                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
+                            </svg>
+                            <span class="title">Copilot Assistant</span>
+                        </div>
+                        <div class="info-snippet-content">
+                            <p class="text-gray-600 mb-2">AI-powered guidance</p>
+                            <p class="text-gray-600 mb-2">Copilot will assist you throughout the FNOL process with:</p>
+                            <ul>
+                                <li><i class="fas fa-check-circle check-icon"></i> Automatic form filling based on policy data</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> Smart document recognition and tagging</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> SLA tracking and notifications</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> Claim status updates and recommendations</li>
+                            </ul>
+                            <blockquote>
+                                "Copilot helped me complete my claim in half the time it would normally take."
+                                <footer>— John Smith, Policyholder</footer>
+                            </blockquote>
+                            <button class="w-full text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                <i class="fas fa-lightbulb mr-2"></i> View Copilot Tips
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Quick Links Card (remains the same) -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
+                        <ul class="list-none space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-file-alt mr-2"></i> FNOL Documentation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-question-circle mr-2"></i> Claim FAQs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-headset mr-2"></i> Contact Support
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-video mr-2"></i> Tutorial Videos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Policy Page -->
+            <section id="policy-page" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column - Policy Information -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Policy Information</h2>
+                        <p class="text-gray-600 mb-4">Enter the policy number to retrieve policy details and pre-fill claim information.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="policy-number" class="block text-sm font-medium text-gray-700 mb-1">Policy Number</label>
+                                <div class="flex">
+                                    <input type="text" id="policy-number" placeholder="Enter policy number (e.g., POL-2023-12345)" class="flex-1 block w-full border border-gray-300 rounded-l-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                                    <button id="lookup-policy-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-r-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                        Look Up Policy
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">Enter the full policy number including prefix</p>
+                            </div>
+                        </div>
+
+                        <!-- Policy Details Display (Initially Hidden) -->
+                        <div id="policy-details-display" class="hidden">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Policy Details</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 mb-6 text-sm">
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Policyholder Name</dt>
+                                    <dd id="policyholder-name-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Policy Type</dt>
+                                    <dd id="policy-type-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Policy Start Date</dt>
+                                    <dd id="policy-start-date-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Policy End Date</dt>
+                                    <dd id="policy-end-date-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Jurisdiction</dt>
+                                    <dd id="jurisdiction-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                    <dt class="font-medium text-gray-500">Coverage Limit</dt>
+                                    <dd id="coverage-limit-display" class="text-gray-800 font-semibold"></dd>
+                                </div>
+                            </div>
+
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Vehicle Information</h3>
+                            <div class="mb-6 bg-gray-50 p-3 rounded-md border border-gray-200">
+                                <dt class="font-medium text-gray-500">Vehicle Details</dt>
+                                <dd id="vehicle-info-display" class="text-gray-800 font-semibold"></dd>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('landing')">
+                                Back
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('details')">
+                                Continue to Details →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Copilot Assistant (Info Snippet) -->
+                <div class="space-y-6">
+                    <!-- Copilot Assistant Card for Policy Page -->
+                    <div id="copilot-info-policy" class="info-snippet-card">
+                        <div class="info-snippet-header">
+                            <!-- SVG logo for AI -->
+                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
+                            </svg>
+                            <span class="title">Copilot Assistant</span>
+                        </div>
+                        <div class="info-snippet-content">
+                            <p class="text-gray-600 mb-2">Policy Information</p>
+                            <p class="text-gray-600 mb-2">I've retrieved the policy information and prefilled the form for you. Here's what I found:</p>
+                            <ul>
+                                <li><i class="fas fa-check-circle check-icon"></i> Policy is active and in good standing</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> Coverage includes comprehensive and collision</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> Deductible: $500 for collision, $250 for comprehensive</li>
+                                <li><i class="fas fa-exclamation-triangle warning-icon"></i> Rental car coverage is limited to $30/day</li>
+                            </ul>
+                            <div class="info-message-box">
+                                <i class="fas fa-info-circle icon"></i>
+                                <span>Tip: Review all prefilled information for accuracy before proceeding to the next step.</span>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4">
+                                <p class="text-gray-600 mb-2">Need assistance?</p>
+                                <p class="text-gray-600 mb-4">Ask me questions about policy coverage or the claim process.</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" placeholder="Ask Copilot a question..." class="flex-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                                    <button class="text-blue-600 hover:text-blue-800 text-lg btn btn-ghost">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Links Card (remains the same) -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Links</h3>
+                        <ul class="list-none space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-file-alt mr-2"></i> FNOL Documentation
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-question-circle mr-2"></i> Claim FAQs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-headset mr-2"></i> Contact Support
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-blue-600 hover:text-blue-800 text-sm">
+                                    <i class="fas fa-video mr-2"></i> Tutorial Videos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Details Page -->
+            <section id="details-page" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column - Incident Details -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Incident Details</h2>
+                        <p class="text-gray-600 mb-4">Please provide detailed information about the incident. Fields marked with <span class="text-red-500">*</span> are required.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="incident-date" class="block text-sm font-medium text-gray-700 mb-1">Date of Incident <span class="text-red-500">*</span></label>
+                                <input type="date" id="incident-date" value="2025-06-04" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                            </div>
+                            <div>
+                                <label for="incident-time" class="block text-sm font-medium text-gray-700 mb-1">Time of Incident <span class="text-red-500">*</span></label>
+                                <input type="time" id="incident-time" value="12:30" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                            </div>
+                        </div>
+
+                        <div class="mb-6 relative"> <!-- Added relative for absolute positioning of suggestions -->
+                            <label for="incident-location" class="block text-sm font-medium text-gray-700 mb-1">Incident Location <span class="text-red-500">*</span></label>
+                            <input type="text" id="incident-location" placeholder="Start typing address or location name" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 mb-2 input">
+                            <ul id="location-suggestions" class="autocomplete-suggestions">
+                                <!-- Suggestions will be dynamically inserted here -->
+                            </ul>
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="incident-description" class="block text-sm font-medium text-gray-700 mb-1">Incident Description <span class="text-red-500">*</span></label>
+                            <textarea id="incident-description" rows="4" placeholder="Please provide a detailed description of what happened..." class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 textarea"></textarea>
+                            <div class="mt-1 text-xs text-gray-500 mb-4 flex items-center gap-2">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Copilot: Mention time, weather conditions, and any witnesses</span>
+                                <span class="ml-auto">0/2000 characters</span>
+                            </div>
+                            <div class="copilot-suggestions-container flex flex-wrap gap-2">
+                                <div class="header">Copilot Suggestions:</div>
+                                <span class="copilot-suggestion-item" data-suggestion="The collision occurred at an intersection">"The collision occurred at an intersection"</span>
+                                <span class="copilot-suggestion-item" data-suggestion="Weather was rainy with poor visibility">"Weather was rainy with poor visibility"</span>
+                                <span class="copilot-suggestion-item" data-suggestion="Other driver appeared to be distracted">"Other driver appeared to be distracted"</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('policy')">
+                                Previous: Policy
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('documents')">
+                                Next: Upload Documents →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Copilot Assistant (Info Snippet) -->
+                <div class="space-y-6">
+                    <!-- Copilot Assistant Card for Details Page -->
+                    <div id="copilot-info-details" class="info-snippet-card">
+                        <div class="info-snippet-header">
+                            <!-- SVG logo for AI -->
+                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
+                            </svg>
+                            <span class="title">Copilot Assistant</span>
+                        </div>
+                        <div class="info-snippet-content">
+                            <p class="text-gray-600 mb-2">Step 3: Incident Details</p>
+                            <p class="text-gray-600 mb-2">Here are some tips to help you complete this section:</p>
+                            <ul>
+                                <li><i class="fas fa-check-circle check-icon"></i> Be as specific as possible about the date and time</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> For location, include street names, landmarks, or GPS coordinates if available</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> Choose the incident type that best describes what happened</li>
+                                <li><i class="fas fa-check-circle check-icon"></i> In your description, mention any witnesses, police reports, or other relevant details</li>
+                            </ul>
+                            <div class="info-message-box">
+                                <i class="fas fa-info-circle icon"></i>
+                                <span>Smart Detection Active. Copilot is analyzing your inputs in real-time to help detect errors and provide suggestions.</span>
+                            </div>
+                            <div class="border-t border-gray-200 pt-4">
+                                <div class="flex items-center justify-between text-sm text-gray-700 mb-2">
+                                    <span>Form Completion</span>
+                                    <span class="font-medium">50%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style="width: 50%"></div>
+                                </div>
+                                <p class="text-sm text-gray-700 mt-2 mb-4">2 of 4 required fields completed</p>
+                                <button class="w-full text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                    <i class="fas fa-microphone mr-2"></i> Use Voice Input
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents You'll Need Card (remains the same) -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Documents You'll Need</h3>
+                        <p class="text-gray-600 mb-4">Prepare these documents for the next step:</p>
+                        <ul class="list-none space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-camera mr-2"></i> Photos of damage/incident
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-pdf mr-2"></i> Police report (if applicable)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-invoice-dollar mr-2"></i> Repair estimates
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-medical-alt mr-2"></i> Medical reports (if applicable)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Page -->
+            <section id="documents-page" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column - Upload Documents -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Upload Documents</h2>
+                        <p class="text-gray-600 mb-4">Attach relevant files to support your claim. Supported types: PDF, JPG, PNG.</p>
+
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+                            <i class="fas fa-cloud-upload-alt text-blue-400 text-4xl mb-4"></i>
+                            <p class="text-gray-600 mb-2">Drag & drop your files here</p>
+                            <p class="text-gray-500 mb-4">or</p>
+                            <!-- Hidden file input -->
+                            <input type="file" id="file-upload-input" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+                            <button id="browse-files-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                <i class="fas fa-folder-open mr-2"></i> Browse Files
+                            </button>
+                            <p class="mt-4 text-xs text-gray-500">Max 10 files, each up to 20MB.</p>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Uploaded Documents <span class="float-right text-sm text-gray-500" id="uploaded-files-count">Total: 0</span></h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-md">File Name</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags Extracted</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-md">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="uploaded-files-table-body">
+                                    <!-- Dynamic content based on uploadedFiles array -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('details')">
+                                Previous: Details
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('review')">
+                                Review & Submit →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Copilot Assistant (Info Snippet) -->
+                <div class="space-y-6">
+                    <!-- Copilot Assistant Card for Documents Page -->
+                    <div id="copilot-info-documents" class="info-snippet-card">
+                        <div class="info-snippet-header">
+                            <!-- SVG logo for AI -->
+                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
+                            </svg>
+                            <span class="title">Doc Assistant</span>
+                        </div>
+                        <div class="info-snippet-content">
+                            <p class="text-gray-600 mb-2">Step 4: OCR & Tagging</p>
+                            <p class="text-gray-600 mb-2">Copilot will extract details from your documents to help autofill your claim. You can edit tags if extraction confidence is low.</p>
+                            <ul>
+                                <li><i class="fas fa-fingerprint check-icon"></i> OCR will extract key info such as VIN, dates, and locations.</li>
+                                <li><i class="fas fa-exclamation-triangle warning-icon"></i> Low-confidence tags appear in <span class="font-semibold text-yellow-800 ml-1">yellow</span> - please review and edit.</li>
+                                <li><i class="fas fa-sync-alt info-icon"></i> Replace or delete files as needed.</li>
+                            </ul>
+                            <div class="border-t border-gray-200 pt-4">
+                                <h4 class="text-md font-semibold text-gray-800 mb-2">OCR & Tagging Active</h4>
+                                <p class="text-gray-600">Doc Assistant runs automatically when you upload a file.</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" placeholder="Ask Copilot a question..." class="flex-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                                    <button class="text-blue-600 hover:text-blue-800 text-lg btn btn-ghost">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document Checklist Card (remains the same) -->
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Document Checklist</h3>
+                        <p class="text-gray-600 mb-4">Prepare these documents for the next step:</p>
+                        <ul class="list-none space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-camera mr-2"></i> Photos of damage/incident
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-pdf mr-2"></i> Police report (if applicable)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-invoice-dollar mr-2"></i> Repair estimates
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center text-gray-700 text-sm">
+                                    <i class="fas fa-file-medical-alt mr-2"></i> Medical reports (if applicable)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Review & Submit Page -->
+            <section id="review-page" class="page-content grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column - Review Summary -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Review & Submit</h2>
+
+                        <!-- Policy Information Summary -->
+                        <div class="mb-6 border-b border-gray-200 pb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-semibold text-gray-800">Policy Information</h3>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium btn btn-ghost" onclick="showPage('policy')"><i class="fas fa-edit mr-1"></i> Edit</button>
+                            </div>
+                            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Policy Holder</dt>
+                                    <dd class="text-gray-800">Taylor Smith</dd>
+                                </div>
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Policy Number</dt>
+                                    <dd class="text-gray-800">PLCY-239812</dd>
+                                </div>
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Policy Type</dt>
+                                    <dd class="text-gray-800">Auto Insurance</dd>
+                                </div>
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Effective Dates</dt>
+                                    <dd class="text-gray-800">2024-01-01 to 2025-01-01</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Incident Details Summary -->
+                        <div class="mb-6 border-b border-gray-200 pb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-semibold text-gray-800">Incident Details</h3>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium btn btn-ghost" onclick="showPage('details')"><i class="fas fa-edit mr-1"></i> Edit</button>
+                            </div>
+                            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Date & Time</dt>
+                                    <dd class="text-gray-800">2024-06-01 15:45</dd>
+                                </div>
+                                <div class="col-span-1">
+                                    <dt class="font-medium text-gray-500">Location</dt>
+                                    <dd class="text-gray-800">415 Spring Ave, Seattle, WA</dd>
+                                </div>
+                                <div class="col-span-2">
+                                    <dt class="font-medium text-gray-500">Incident Type</dt>
+                                    <dd class="text-gray-800">Rear-End Collision</dd>
+                                </div>
+                                <div class="col-span-2">
+                                    <dt class="font-medium text-gray-500">Description</dt>
+                                    <dd class="text-gray-800">Stopped at a red light when another car hit from behind.</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Uploaded Documents Summary -->
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-lg font-semibold text-gray-800">Uploaded Documents</h3>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium btn btn-ghost" onclick="showPage('documents')"><i class="fas fa-edit mr-1"></i> Edit</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-md">File Name</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags Extracted</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200" id="review-uploaded-files-table-body">
+                                        <!-- Dynamic content based on uploadedFiles array -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center mb-6">
+                            <input type="checkbox" id="confirm-accuracy" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="confirm-accuracy" class="ml-2 block text-sm text-gray-900">
+                                I confirm this information is accurate.
+                            </label>
+                        </div>
+
+                        <div class="flex justify-between mt-6">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('documents')">
+                                Previous: Documents
+                            </button>
+                            <button id="submit-fnol-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                Submit FNOL →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Copilot Assistant (Info Snippet) -->
+                <div class="space-y-6">
+                    <!-- Copilot Assistant Card for Review & Submit Page -->
+                    <div id="copilot-info-review" class="info-snippet-card">
+                        <div class="info-snippet-header">
+                            <!-- SVG logo for AI -->
+                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
+                            </svg>
+                            <span class="title">Copilot Summary</span>
+                        </div>
+                        <div class="info-snippet-content">
+                            <p class="text-gray-600 mb-2">Autofill, Validation & Hints</p>
+                            <ul>
+                                <li><i class="fas fa-check-circle check-icon"></i> 7 fields were pre-filled using uploaded documents.</li>
+                                <li><i class="fas fa-exclamation-triangle warning-icon"></i> 1 low-confidence input needs a review in Uploaded Documents.</li>
+                                <li><i class="fas fa-info-circle info-icon"></i> No errors detected in your submission.</li>
+                            </ul>
+                            <div class="info-message-box">
+                                <i class="fas fa-info-circle icon"></i>
+                                <span>AI Copilot assisted to speed up your claim. Review highlighted items before submitting.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submission Success Page (New) -->
+            <section id="success-page" class="page-content flex items-center justify-center min-h-[calc(100vh-10rem)]">
+                <div class="bg-white p-8 rounded-lg shadow-lg text-center border border-gray-200 max-w-md w-full">
+                    <i class="fas fa-check-circle text-green-500 text-6xl mb-4"></i>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Claim Submitted Successfully!</h2>
+                    <p class="text-gray-600 mb-4">Your claim has been successfully submitted and is now being processed.</p>
+                    <div class="bg-gray-100 p-3 rounded-md mb-6">
+                        <p class="text-sm text-gray-700 font-medium">Claim ID: <span id="generated-claim-id" class="text-blue-700">CLM-2025-56789</span></p>
+                    </div>
+                    <p class="text-gray-600 mb-6">You will receive an email confirmation shortly with further instructions.</p>
+                    <div class="space-y-4">
+                        <button class="w-full text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('landing')">
+                            Return to Home
+                        </button>
+                        <button class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary">
+                            View Claim Details
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Page (New Section) -->
+            <section id="settings-page" class="page-content grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">App Customization Settings</h2>
+                    <p class="text-gray-600 mb-6">Adjust the look and feel of your application to your preferences.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+                        <!-- App Name & Logo -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Application Identity</h3>
+                            <div class="mb-4">
+                                <label for="app-name-input" class="block text-sm font-medium text-gray-700 mb-1">App Name</label>
+                                <input type="text" id="app-name-input" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                            </div>
+                            <div class="mb-4">
+                                <label for="app-logo-input" class="block text-sm font-medium text-gray-700 mb-1">App Logo (URL or Upload)</label>
+                                <input type="text" id="app-logo-url-input" placeholder="Enter logo URL" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 mb-2 input">
+                                <input type="file" id="app-logo-file-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <img id="app-logo-preview" src="" alt="Logo Preview" class="mt-2 h-16 w-16 object-contain hidden border border-gray-200 rounded p-1">
+                            </div>
+                        </div>
+
+                        <!-- Colors -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Color Palette</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="primary-color-input" class="block text-sm font-medium text-gray-700 mb-1">Primary Color</label>
+                                    <input type="color" id="primary-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                                <div>
+                                    <label for="secondary-color-input" class="block text-sm font-medium text-gray-700 mb-1">Secondary Color</label>
+                                    <input type="color" id="secondary-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                                <div>
+                                    <label for="tertiary-color-input" class="block text-sm font-medium text-gray-700 mb-1">Tertiary Color</label>
+                                    <input type="color" id="tertiary-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                                <div>
+                                    <label for="success-color-input" class="block text-sm font-medium text-gray-700 mb-1">Success Color</label>
+                                    <input type="color" id="success-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                                <div>
+                                    <label for="warning-color-input" class="block text-sm font-medium text-gray-700 mb-1">Warning Color</label>
+                                    <input type="color" id="warning-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                                <div>
+                                    <label for="danger-color-input" class="block text-sm font-medium text-gray-700 mb-1">Danger Color</label>
+                                    <input type="color" id="danger-color-input" class="w-full h-10 border border-gray-300 rounded-md cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Button & Text Field Shapes -->
+                        <div class="md:col-span-2">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Element Shapes</h3>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Button Shape</label>
+                                <div class="flex flex-wrap gap-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="button-shape" value="square" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Square</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="button-shape" value="rounded-md" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Rounded Edges</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="button-shape" value="pill" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Pill (Fully Rounded)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Text Field Shape</label>
+                                <div class="flex flex-wrap gap-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="input-shape" value="square" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Square</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="input-shape" value="rounded-md" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Rounded Edges</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="input-shape" value="pill" class="radio radio-primary">
+                                        <span class="ml-2 text-gray-700">Pill (Fully Rounded)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fonts -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Typography</h3>
+                            <div class="mb-4">
+                                <label for="font-select" class="block text-sm font-medium text-gray-700 mb-1">Select Font</label>
+                                <select id="font-select" class="select select-bordered w-full text-sm">
+                                    <option value="Inter">Inter</option>
+                                    <option value="Roboto">Roboto</option>
+                                    <option value="Open Sans">Open Sans</option>
+                                    <option value="Lato">Lato</option>
+                                    <option value="Montserrat">Montserrat</option>
+                                    <option value="Oswald">Oswald</option>
+                                    <option value="Playfair Display">Playfair Display</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- UI Shadow -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Visual Effects</h3>
+                            <div class="mb-4">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" id="toggle-shadows" class="toggle toggle-primary">
+                                    <span class="ml-2 text-gray-700">Enable UI Shadows</span>
+                                </label>
+                            </div>
+                            <div class="mb-4">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" id="toggle-dark-mode" class="toggle toggle-primary">
+                                    <span class="ml-2 text-gray-700">Enable Dark Mode</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Stepper Styles -->
+                        <div class="md:col-span-2">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Stepper Style</h3>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="stepper-style" value="default" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Default (Numbers)</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="stepper-style" value="dots" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Dots</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="stepper-style" value="icons" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Icons</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="stepper-style" value="line" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Connecting Line</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="stepper-style" value="pills" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Pill Buttons</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Theme Templates -->
+                        <div class="md:col-span-2">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Theme Templates</h3>
+                            <div class="mb-4">
+                                <label for="template-name-input" class="block text-sm font-medium text-gray-700 mb-1">Template Name</label>
+                                <input type="text" id="template-name-input" placeholder="e.g., My Dark Theme" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
+                            </div>
+                            <button id="save-template-btn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-success mb-4">
+                                <i class="fas fa-save mr-2"></i> Save Current as Template
+                            </button>
+
+                            <div class="mb-4">
+                                <label for="template-select" class="block text-sm font-medium text-gray-700 mb-1">Select Template</label>
+                                <div class="flex gap-2">
+                                    <select id="template-select" class="select select-bordered w-full text-sm flex-1">
+                                        <option value="">-- Select a saved template --</option>
+                                    </select>
+                                    <button id="apply-template-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                        Apply
+                                    </button>
+                                    <button id="delete-template-btn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-error">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 flex justify-end gap-4 border-t border-gray-200 pt-6">
+                        <button id="revert-defaults-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary">
+                            Revert to Defaults
+                        </button>
+                        <button id="save-settings-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // JavaScript to handle page navigation and stepper updates
+        const pages = ['landing', 'policy', 'details', 'documents', 'review', 'success', 'settings']; // Added 'settings' page
+        const stepperSteps = document.querySelectorAll('#fnol-stepper .custom-step');
+        const fnolStepper = document.getElementById('fnol-stepper');
+        const stepperContainer = document.getElementById('stepper-container'); // For applying stepper styles
+        const fileUploadInput = document.getElementById('file-upload-input');
+        const browseFilesBtn = document.getElementById('browse-files-btn');
+        const uploadedFilesTableBody = document.getElementById('uploaded-files-table-body');
+        const uploadedFilesCountSpan = document.getElementById('uploaded-files-count');
+        const reviewUploadedFilesTableBody = document.getElementById('review-uploaded-files-table-body'); // For the review page table
+        const submitFnolBtn = document.getElementById('submit-fnol-btn'); // Get the submit button
+
+        // Policy Page Elements
+        const policyDetailsDisplay = document.getElementById('policy-details-display');
+        const policyNumberInput = document.getElementById('policy-number');
+        const lookupPolicyBtn = document.getElementById('lookup-policy-btn');
+        // Display elements for policy details
+        const policyholderNameDisplay = document.getElementById('policyholder-name-display');
+        const policyTypeDisplay = document.getElementById('policy-type-display');
+        const policyStartDateDisplay = document.getElementById('policy-start-date-display');
+        const policyEndDateDisplay = document.getElementById('policy-end-date-display');
+        const jurisdictionDisplay = document.getElementById('jurisdiction-display');
+        const coverageLimitDisplay = document.getElementById('coverage-limit-display');
+        const vehicleInfoDisplay = document.getElementById('vehicle-info-display');
+
+        // Incident Location Autocomplete Elements
+        const incidentLocationInput = document.getElementById('incident-location');
+        const locationSuggestionsList = document.getElementById('location-suggestions');
+        const predefinedLocations = [
+            "123 Main Street, Seattle, WA 99999",
+            "Pike Place Market, Seattle, WA 98101",
+            "Seattle-Tacoma International Airport, SeaTac, WA 98158",
+            "456 Oak Avenue, Tacoma, WA 98402",
+            "789 Pine Street, Bellevue, WA 98004"
+        ];
+
+        // Info Snippet elements - one per page. We use `id` for direct access.
+        const infoSnippets = {
+            'landing': document.getElementById('copilot-info-landing'),
+            'policy': document.getElementById('copilot-info-policy'),
+            'details': document.getElementById('copilot-info-details'),
+            'documents': document.getElementById('copilot-info-documents'),
+            'review': document.getElementById('copilot-info-review'),
+            'success': null, // No info snippet for success page
+            'settings': null // No info snippet for settings page
+        };
+
+        // Sidebar elements for toggling
+        const mainSidebar = document.getElementById('main-sidebar');
+        const sidebarLogoText = document.getElementById('sidebar-logo-text');
+        const sidebarLogoImg = document.getElementById('sidebar-logo-img');
+        const sidebarNavItems = document.querySelectorAll('#main-sidebar nav ul li a'); // All nav links
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+
+        // Incident Description Copilot Suggestions
+        const incidentDescriptionTextarea = document.getElementById('incident-description');
+        const copilotSuggestionItems = document.querySelectorAll('.copilot-suggestion-item');
+
+        // Settings Page Elements
+        const appNameInput = document.getElementById('app-name-input');
+        const appLogoUrlInput = document.getElementById('app-logo-url-input');
+        const appLogoFileInput = document.getElementById('app-logo-file-input');
+        const appLogoPreview = document.getElementById('app-logo-preview');
+
+        const primaryColorInput = document.getElementById('primary-color-input');
+        const secondaryColorInput = document.getElementById('secondary-color-input');
+        const tertiaryColorInput = document.getElementById('tertiary-color-input');
+        const successColorInput = document.getElementById('success-color-input');
+        const warningColorInput = document.getElementById('warning-color-input');
+        const dangerColorInput = document.getElementById('danger-color-input');
+
+        const buttonShapeRadios = document.querySelectorAll('input[name="button-shape"]');
+        const inputShapeRadios = document.querySelectorAll('input[name="input-shape"]');
+        const fontSelect = document.getElementById('font-select');
+        const toggleShadows = document.getElementById('toggle-shadows');
+        const toggleDarkMode = document.getElementById('toggle-dark-mode'); // New dark mode toggle
+        const stepperStyleRadios = document.querySelectorAll('input[name="stepper-style"]');
+
+        const templateNameInput = document.getElementById('template-name-input');
+        const saveTemplateBtn = document.getElementById('save-template-btn');
+        const templateSelect = document.getElementById('template-select');
+        const applyTemplateBtn = document.getElementById('apply-template-btn');
+        const deleteTemplateBtn = document.getElementById('delete-template-btn');
+
+        const saveSettingsBtn = document.getElementById('save-settings-btn');
+        const revertDefaultsBtn = document.getElementById('revert-defaults-btn');
+
+        // Initial simulated uploaded files for testing
+        let uploadedFiles = [
+            { name: "AccidentPhotos.jpg", status: "Success", tags: "Photos, Damage" },
+            { name: "PoliceReport_Seattle_06-04.pdf", status: "Success", tags: "Police Report, Location" },
+            { name: "RepairEstimate_ABC_Auto.pdf", status: "Pending", tags: "Repair Estimate" },
+            { name: "WitnessStatement_JohnDoe.docx", status: "Error", tags: "Unsupported Format" },
+            { name: "MedicalRecords_SarahJ.zip", status: "Pending", tags: "Medical Report, Low Confidence" }
+        ];
+
+        // Default Settings
+        const defaultSettings = {
+            appName: 'WestGlen Claims',
+            appLogo: 'https://placehold.co/32x32/0078D4/ffffff?text=D365',
+            primaryColor: '#0078d4',
+            secondaryColor: '#4a4a4a',
+            tertiaryColor: '#8c8c8c',
+            successColor: '#107c10',
+            warningColor: '#ffb900',
+            dangerColor: '#dc2626',
+            buttonShape: 'rounded-md',
+            inputShape: 'rounded-md',
+            fontFamily: 'Inter',
+            enableShadows: true,
+            theme: 'light', // Default theme
+            stepperStyle: 'default'
+        };
+
+        let currentSettings = { ...defaultSettings }; // Start with default settings
+        let savedThemes = []; // Array to store saved themes
+
+        // Function to load settings from local storage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('appSettings');
+            if (savedSettings) {
+                currentSettings = JSON.parse(savedSettings);
+            } else {
+                currentSettings = { ...defaultSettings };
+            }
+
+            const savedThemesJSON = localStorage.getItem('savedThemes');
+            if (savedThemesJSON) {
+                savedThemes = JSON.parse(savedThemesJSON);
+            } else {
+                savedThemes = [];
+            }
+
+            // Populate settings controls
+            populateSettingsControls();
+            populateThemeSelect(); // Populate the theme select dropdown
+
+            applySettings(); // Apply loaded settings to the UI
+        }
+
+        // Function to populate settings controls with currentSettings
+        function populateSettingsControls() {
+            appNameInput.value = currentSettings.appName;
+            appLogoUrlInput.value = currentSettings.appLogo;
+            appLogoPreview.src = currentSettings.appLogo;
+            appLogoPreview.style.display = currentSettings.appLogo ? 'block' : 'none';
+
+            primaryColorInput.value = currentSettings.primaryColor;
+            secondaryColorInput.value = currentSettings.secondaryColor;
+            tertiaryColorInput.value = currentSettings.tertiaryColor;
+            successColorInput.value = currentSettings.successColor;
+            warningColorInput.value = currentSettings.warningColor;
+            dangerColorInput.value = currentSettings.dangerColor;
+
+            // Set radio buttons for shapes
+            buttonShapeRadios.forEach(radio => radio.checked = (radio.value === currentSettings.buttonShape));
+            inputShapeRadios.forEach(radio => radio.checked = (radio.value === currentSettings.inputShape));
+
+            fontSelect.value = currentSettings.fontFamily;
+            toggleShadows.checked = currentSettings.enableShadows;
+            toggleDarkMode.checked = (currentSettings.theme === 'dark'); // Set dark mode toggle
+
+            // Set radio buttons for stepper style
+            stepperStyleRadios.forEach(radio => radio.checked = (radio.value === currentSettings.stepperStyle));
+        }
+
+        // Function to apply settings to the UI
+        function applySettings() {
+            const root = document.documentElement; // HTML element for CSS variables
+
+            // Apply colors
+            root.style.setProperty('--primary-color', currentSettings.primaryColor);
+            root.style.setProperty('--secondary-color', currentSettings.secondaryColor);
+            root.style.setProperty('--tertiary-color', currentSettings.tertiaryColor);
+            root.style.setProperty('--success-color', currentSettings.successColor);
+            root.style.setProperty('--warning-color', currentSettings.warningColor);
+            root.style.setProperty('--danger-color', currentSettings.dangerColor);
+
+            // Apply shapes
+            let buttonRadius = '0.375rem'; // rounded-md
+            if (currentSettings.buttonShape === 'square') buttonRadius = '0';
+            else if (currentSettings.buttonShape === 'pill') buttonRadius = '9999px';
+            root.style.setProperty('--button-border-radius', buttonRadius);
+
+            let fieldRadius = '0.375rem'; // rounded-md
+            if (currentSettings.inputShape === 'square') fieldRadius = '0';
+            else if (currentSettings.inputShape === 'pill') fieldRadius = '9999px';
+            root.style.setProperty('--field-border-radius', fieldRadius);
+
+
+            // Apply font
+            root.style.setProperty('--font-family', `'${currentSettings.fontFamily}', sans-serif`);
+            // Dynamically load Google Font if not already loaded or if a different one is selected
+            const existingFontLink = document.querySelector(`link[href*="family=${currentSettings.fontFamily.replace(/\s/g, '+')}"]`);
+            if (!existingFontLink || existingFontLink.getAttribute('data-initial') === 'true') {
+                // Remove existing initial font link if it exists
+                const initialFontLink = document.querySelector('link[data-initial="true"]');
+                if (initialFontLink && initialFontLink !== existingFontLink) { // Only remove if it's different
+                    initialFontLink.remove();
+                }
+
+                // Add new font link if it doesn't exist
+                if (!existingFontLink) {
+                    const fontLink = document.createElement('link');
+                    fontLink.rel = 'stylesheet';
+                    fontLink.href = `https://fonts.googleapis.com/css2?family=${currentSettings.fontFamily.replace(/\s/g, '+')}:wght@300;400;500;600;700&display=swap`;
+                    document.head.appendChild(fontLink);
+                }
+            }
+
+
+            // Apply shadows
+            root.style.setProperty('--box-shadow', currentSettings.enableShadows ? '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)' : 'none');
+
+            // Apply app name and logo
+            document.title = `${currentSettings.appName} - Claims Management`;
+            sidebarLogoText.textContent = currentSettings.appName;
+            sidebarLogoImg.src = currentSettings.appLogo;
+            appLogoPreview.src = currentSettings.appLogo;
+            appLogoPreview.style.display = currentSettings.appLogo ? 'block' : 'none';
+
+            // Apply theme (light/dark mode)
+            root.setAttribute('data-theme', currentSettings.theme);
+
+            // Apply stepper style
+            stepperContainer.classList.remove('stepper-style-dots', 'stepper-style-progress');
+            if (currentSettings.stepperStyle === 'dots') {
+                stepperContainer.classList.add('stepper-style-dots');
+            } else if (currentSettings.stepperStyle === 'progress') {
+                stepperContainer.classList.add('stepper-style-progress');
+            }
+            // Re-apply stepper active state and checks for the current page
+            updateStepper(document.querySelector('.page-content:not([style*="display: none"])')?.id.replace('-page', '') || 'landing');
+        }
+
+        // Function to save settings to local storage
+        function saveSettings() {
+            localStorage.setItem('appSettings', JSON.stringify(currentSettings));
+            alert('Settings saved successfully!'); // Use a simple alert for demonstration
+        }
+
+        // Function to revert to default settings
+        function revertToDefaults() {
+            localStorage.removeItem('appSettings'); // Clear saved settings
+            currentSettings = { ...defaultSettings }; // Reset to default
+            loadSettings(); // Load defaults and apply
+            alert('Settings reverted to defaults.'); // Use a simple alert for demonstration
+        }
+
+        // --- Theme Template Functions ---
+        function populateThemeSelect() {
+            templateSelect.innerHTML = '<option value="">-- Select a saved template --</option>';
+            savedThemes.forEach((theme, index) => {
+                const option = document.createElement('option');
+                option.value = index; // Use index as value for easy lookup
+                option.textContent = theme.name;
+                templateSelect.appendChild(option);
+            });
+        }
+
+        function saveThemeTemplate() {
+            const templateName = templateNameInput.value.trim();
+            if (!templateName) {
+                alert('Please enter a name for your template.');
+                return;
+            }
+
+            // Check if a template with this name already exists
+            const existingIndex = savedThemes.findIndex(theme => theme.name === templateName);
+            if (existingIndex > -1) {
+                if (!confirm(`A template named "${templateName}" already exists. Do you want to overwrite it?`)) {
+                    return;
+                }
+                savedThemes[existingIndex] = { name: templateName, settings: { ...currentSettings } };
+            } else {
+                savedThemes.push({ name: templateName, settings: { ...currentSettings } });
+            }
+
+            localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
+            populateThemeSelect();
+            templateNameInput.value = ''; // Clear input after saving
+            alert(`Template "${templateName}" saved successfully!`);
+        }
+
+        function applyThemeTemplate() {
+            const selectedIndex = templateSelect.value;
+            if (selectedIndex === "") {
+                alert('Please select a template to apply.');
+                return;
+            }
+
+            const themeToApply = savedThemes[parseInt(selectedIndex)];
+            if (themeToApply) {
+                currentSettings = { ...themeToApply.settings };
+                populateSettingsControls(); // Update UI controls
+                applySettings(); // Apply settings to the app
+                alert(`Template "${themeToApply.name}" applied successfully!`);
+            }
+        }
+
+        function deleteThemeTemplate() {
+            const selectedIndex = templateSelect.value;
+            if (selectedIndex === "") {
+                alert('Please select a template to delete.');
+                return;
+            }
+
+            const themeName = savedThemes[parseInt(selectedIndex)].name;
+            if (confirm(`Are you sure you want to delete the template "${themeName}"?`)) {
+                savedThemes.splice(parseInt(selectedIndex), 1);
+                localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
+                populateThemeSelect();
+                templateSelect.value = ""; // Reset dropdown
+                alert(`Template "${themeName}" deleted.`);
+            }
+        }
+
+
+        // Event listeners for settings inputs
+        appNameInput.addEventListener('input', (e) => { currentSettings.appName = e.target.value; applySettings(); });
+        appLogoUrlInput.addEventListener('input', (e) => {
+            currentSettings.appLogo = e.target.value;
+            applySettings();
+            appLogoFileInput.value = ''; // Clear file input if URL is used
+        });
+        appLogoFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    currentSettings.appLogo = event.target.result;
+                    applySettings();
+                    appLogoUrlInput.value = ''; // Clear URL input if file is used
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        primaryColorInput.addEventListener('input', (e) => { currentSettings.primaryColor = e.target.value; applySettings(); });
+        secondaryColorInput.addEventListener('input', (e) => { currentSettings.secondaryColor = e.target.value; applySettings(); });
+        tertiaryColorInput.addEventListener('input', (e) => { currentSettings.tertiaryColor = e.target.value; applySettings(); });
+        successColorInput.addEventListener('input', (e) => { currentSettings.successColor = e.target.value; applySettings(); });
+        warningColorInput.addEventListener('input', (e) => { currentSettings.warningColor = e.target.value; applySettings(); });
+        dangerColorInput.addEventListener('input', (e) => { currentSettings.dangerColor = e.target.value; applySettings(); });
+
+        buttonShapeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => { currentSettings.buttonShape = e.target.value; applySettings(); });
+        });
+        inputShapeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => { currentSettings.inputShape = e.target.value; applySettings(); });
+        });
+
+        fontSelect.addEventListener('change', (e) => { currentSettings.fontFamily = e.target.value; applySettings(); });
+        toggleShadows.addEventListener('change', (e) => { currentSettings.enableShadows = e.target.checked; applySettings(); });
+        toggleDarkMode.addEventListener('change', (e) => {
+            currentSettings.theme = e.target.checked ? 'dark' : 'light';
+            applySettings();
+        });
+        stepperStyleRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => { currentSettings.stepperStyle = e.target.value; applySettings(); });
+        });
+
+        saveSettingsBtn.addEventListener('click', saveSettings);
+        revertDefaultsBtn.addEventListener('click', revertToDefaults);
+
+        // Theme Template Event Listeners
+        saveTemplateBtn.addEventListener('click', saveThemeTemplate);
+        applyTemplateBtn.addEventListener('click', applyThemeTemplate);
+        deleteTemplateBtn.addEventListener('click', deleteTemplateBtn);
+
+
+        // Function to show a specific page and update breadcrumbs and stepper
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+
+            // Show the requested page
+            const targetPage = document.getElementById(`${pageId}-page`);
+            if (targetPage) {
+                targetPage.style.display = 'grid'; // Use grid for page content. Success page uses flex.
+
+                // Special handling for success page layout
+                if (pageId === 'success') {
+                    targetPage.style.display = 'flex';
+                    fnolStepper.style.display = 'none'; // Stepper is hidden on success page
+                } else if (pageId === 'landing' || pageId === 'settings') { // Stepper hidden for landing and settings pages
+                    fnolStepper.style.display = 'none';
+                } else {
+                    fnolStepper.style.display = 'block'; // Use block for custom stepper
+                    updateStepper(pageId);
+                }
+
+                updateBreadcrumbs(pageId);
+
+                // If navigating to review page, update its table
+                if (pageId === 'review') {
+                    renderReviewFiles();
+                }
+
+                // If navigating to policy page, reset policy details display
+                if (pageId === 'policy') {
+                    resetPolicyDetails();
+                }
+
+                // Update info snippets for the new page
+                updateInfoSnippets(pageId);
+            } else {
+                console.error(`Page with ID '${pageId}-page' not found.`);
+            }
+        }
+
+        // Function to update breadcrumbs based on the current page
+        function updateBreadcrumbs(pageId) {
+            const breadcrumbsContainer = document.getElementById('breadcrumbs');
+            const currentPageBreadcrumbItem = document.getElementById('current-page-breadcrumb-item');
+            const currentBreadcrumbSpan = document.getElementById('current-breadcrumb');
+
+            // Remove all intermediate breadcrumb items (those between "Home" and "Current Page")
+            let node = breadcrumbsContainer.firstElementChild.nextElementSibling;
+            while (node && node !== currentPageBreadcrumbItem) {
+                let nextNode = node.nextElementSibling;
+                breadcrumbsContainer.removeChild(node);
+                node = nextNode;
+            }
+
+            let breadcrumbText = '';
+            switch (pageId) {
+                case 'landing':
+                    breadcrumbText = 'Claims Overview'; // Adjusted for new app name
+                    break;
+                case 'policy':
+                    breadcrumbText = 'Policy Lookup';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    break;
+                case 'details':
+                    breadcrumbText = 'Incident Details';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    addBreadcrumbLink('Policy Lookup', 'policy');
+                    break;
+                case 'documents':
+                    breadcrumbText = 'Documents';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    addBreadcrumbLink('Policy Lookup', 'policy');
+                    addBreadcrumbLink('Incident Details', 'details');
+                    break;
+                case 'review':
+                    breadcrumbText = 'Review & Submit';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    addBreadcrumbLink('Policy Lookup', 'policy');
+                    addBreadcrumbLink('Incident Details', 'details');
+                    addBreadcrumbLink('Documents', 'documents'); // Added documents breadcrumb
+                    break;
+                case 'success':
+                    breadcrumbText = 'Submission Success';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    addBreadcrumbLink('Policy Lookup', 'policy');
+                    addBreadcrumbLink('Incident Details', 'details');
+                    addBreadcrumbLink('Documents', 'documents');
+                    addBreadcrumbLink('Review & Submit', 'review');
+                    break;
+                case 'settings':
+                    breadcrumbText = 'Settings';
+                    addBreadcrumbLink('Claims Overview', 'landing');
+                    break;
+            }
+            currentBreadcrumbSpan.textContent = breadcrumbText;
+        }
+
+        // Helper function to add a breadcrumb link
+        function addBreadcrumbLink(text, pageId) {
+            const breadcrumbsContainer = document.getElementById('breadcrumbs');
+            const currentPageBreadcrumbItem = document.getElementById('current-page-breadcrumb-item');
+
+            const li = document.createElement('li');
+            li.className = 'flex items-center';
+            li.innerHTML = `
+                <i class="fas fa-chevron-right mx-2 text-xs"></i>
+                <a href="#" class="text-blue-600 hover:text-blue-800" onclick="showPage('${pageId}')">${text}</a>
+            `;
+            breadcrumbsContainer.insertBefore(li, currentPageBreadcrumbItem); // Insert before the current page item
+        }
+
+        // Function to update the stepper's active state and add numbers and checkmarks
+        function updateStepper(pageId) {
+            stepperSteps.forEach(step => {
+                step.classList.remove('active', 'completed');
+                // Hide all internal elements first for a clean slate
+                const stepDigit = step.querySelector('.step-digit');
+                const stepIcon = step.querySelector('.step-icon');
+                const stepCheckmarkCore = step.querySelector('.step-checkmark-core');
+
+                if (stepDigit) stepDigit.style.display = 'none';
+                if (stepIcon) stepIcon.style.display = 'none';
+                if (stepCheckmarkCore) stepCheckmarkCore.style.display = 'none';
+
+                // Remove any old external checkmarks that might have been added by previous logic
+                const existingExternalCheckmark = step.querySelector('.custom-step-checkmark:not(.step-checkmark-core)');
+                if (existingExternalCheckmark) {
+                    existingExternalCheckmark.remove();
+                }
+            });
+
+            const currentPageIndex = pages.indexOf(pageId);
+
+            stepperSteps.forEach((step, index) => {
+                const stepPageId = step.getAttribute('data-step-id');
+                const stepPageIndex = pages.indexOf(stepPageId);
+
+                const stepDigit = step.querySelector('.step-digit');
+                const stepIcon = step.querySelector('.step-icon');
+                const stepCheckmarkCore = step.querySelector('.step-checkmark-core');
+
+
+                if (stepPageIndex < currentPageIndex) {
+                    step.classList.add('completed');
+                    if (stepCheckmarkCore) stepCheckmarkCore.style.display = 'inline-block'; // Show checkmark for completed
+
+                } else if (stepPageIndex === currentPageIndex) {
+                    step.classList.add('active');
+                    // For active, show icon or digit based on style, unless it's pill style
+                    if (currentSettings.stepperStyle === 'icons' && stepIcon) {
+                        stepIcon.style.display = 'inline-block';
+                    } else if (stepDigit) { // Default or dots or line
+                        stepDigit.style.display = 'inline-block';
+                    }
+
+                } else { // Future steps
+                    if (currentSettings.stepperStyle === 'icons' && stepIcon) {
+                        stepIcon.style.display = 'inline-block';
+                    } else if (stepDigit) { // Default or dots or line
+                        stepDigit.style.display = 'inline-block';
+                    }
+                }
+            });
+        }
+
+        // --- File Upload Simulation Logic ---
+
+        // Event listener for "Browse Files" button click
+        browseFilesBtn.addEventListener('click', () => {
+            fileUploadInput.click(); // Trigger click on the hidden file input
+        });
+
+        // Event listener for file input change (when a file is selected)
+        fileUploadInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+            if (files.length > 0) {
+                // Clear existing "No documents uploaded yet." row if present
+                if (uploadedFiles.length === 0) {
+                    uploadedFilesTableBody.innerHTML = '';
+                }
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileName = file.name;
+                    let status = 'Pending';
+                    let tags = 'Document';
+
+                    if (fileName.match(/\.(jpg|jpeg|png)$/i)) {
+                        tags = 'Photo';
+                        status = 'Success';
+                    } else if (fileName.match(/\.pdf$/i)) {
+                        tags = 'PDF Document';
+                        status = 'Success';
+                    } else if (fileName.match(/\.docx$/i) || fileName.match(/\.zip$/i)) {
+                        status = 'Error';
+                        tags = 'Unsupported Format';
+                    }
+
+                    // Simulate a random status for demonstration if it's not a known type
+                    const randomStatus = ['Success', 'Pending', 'Error'][Math.floor(Math.random() * 3)];
+                    if (status !== 'Error') { // Don't override explicit errors
+                        status = randomStatus;
+                    }
+
+
+                    uploadedFiles.push({ name: fileName, status: status, tags: tags });
+                }
+                renderUploadedFiles(); // Re-render the table with new files
+            }
+            // Clear the file input value to allow re-uploading the same file if needed
+            event.target.value = '';
+        });
+
+        // Function to remove a simulated file
+        function removeFile(fileNameToRemove) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileNameToRemove);
+            renderUploadedFiles(); // Re-render the table
+        }
+
+        // Function to render uploaded files in the documents page table
+        function renderUploadedFiles() {
+            uploadedFilesTableBody.innerHTML = ''; // Clear current table content
+            if (uploadedFiles.length === 0) {
+                uploadedFilesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No documents uploaded yet.</td>
+                    </tr>
+                `;
+            } else {
+                uploadedFiles.forEach(file => {
+                    let statusColorClass = '';
+                    let tagColorClass = 'bg-gray-200 text-gray-800';
+
+                    if (file.status === 'Success') {
+                        statusColorClass = 'bg-green-100 text-green-800';
+                    } else if (file.status === 'Pending') {
+                        statusColorClass = 'bg-yellow-100 text-yellow-800';
+                    } else if (file.status === 'Error') {
+                        statusColorClass = 'bg-red-100 text-red-800';
+                    }
+
+                    if (file.tags.includes('Low Confidence')) {
+                         tagColorClass = 'bg-yellow-100 text-yellow-800';
+                    } else if (file.tags.includes('Unsupported Format')) {
+                         tagColorClass = 'bg-red-100 text-red-800';
+                    }
+
+
+                    const newRow = `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${file.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColorClass}">${file.status}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <span class="inline-block text-xs px-2 py-1 rounded-full mr-1 mb-1 ${tagColorClass}">${file.tags}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-red-600 hover:text-red-900 focus:outline-none" onclick="removeFile('${file.name}')">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    uploadedFilesTableBody.insertAdjacentHTML('beforeend', newRow);
+                });
+            }
+            uploadedFilesCountSpan.textContent = `Total: ${uploadedFiles.length}`;
+        }
+
+        // Function to render uploaded files in the review page table
+        function renderReviewFiles() {
+            reviewUploadedFilesTableBody.innerHTML = ''; // Clear current table content
+            if (uploadedFiles.length === 0) {
+                reviewUploadedFilesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No documents uploaded.</td>
+                    </tr>
+                `;
+            } else {
+                uploadedFiles.forEach(file => {
+                     let tagColorClass = 'bg-gray-200 text-gray-800';
+                     if (file.tags.includes('Low Confidence')) {
+                         tagColorClass = 'bg-yellow-100 text-yellow-800';
+                     } else if (file.tags.includes('Unsupported Format')) {
+                         tagColorClass = 'bg-red-100 text-red-800';
+                     }
+
+                    const newRow = `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">${file.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${file.status === 'Success' ? 'bg-green-100 text-green-800' : file.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">${file.status}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <span class="inline-block text-xs px-2 py-1 rounded-full mr-1 mb-1 ${tagColorClass}">${file.tags}</span>
+                            </td>
+                        </tr>
+                    `;
+                    reviewUploadedFilesTableBody.insertAdjacentHTML('beforeend', newRow);
+                });
+            }
+        }
+
+        // Function to show/hide the correct info snippet for the current page
+        function updateInfoSnippets(currentPageId) {
+            // Hide all info snippets first
+            for (const key in infoSnippets) {
+                if (infoSnippets[key]) {
+                    infoSnippets[key].style.display = 'none';
+                }
+            }
+            // Show only the relevant info snippet
+            const currentSnippet = infoSnippets[currentPageId];
+            if (currentSnippet) {
+                currentSnippet.style.display = 'flex'; // Use flex to maintain column layout
+            }
+        }
+
+        // --- Policy Lookup Logic ---
+        function lookupPolicy() {
+            const policyNumber = policyNumberInput.value.trim();
+            if (policyNumber) {
+                // Simulate fetching policy details
+                policyholderNameDisplay.textContent = 'Sarah Johnson';
+                policyTypeDisplay.textContent = 'Auto Insurance';
+                policyStartDateDisplay.textContent = '01/15/2023';
+                policyEndDateDisplay.textContent = '01/15/2024';
+                jurisdictionDisplay.textContent = 'California';
+                coverageLimitDisplay.textContent = '$500,000';
+                vehicleInfoDisplay.textContent = '2020 Toyota Camry (VIN: 1HGBH41JXMN109186)';
+                policyDetailsDisplay.classList.remove('hidden'); // Show the details
+            } else {
+                // Clear and hide if policy number is empty
+                resetPolicyDetails();
+            }
+        }
+
+        function resetPolicyDetails() {
+            policyDetailsDisplay.classList.add('hidden'); // Hide the details
+            policyholderNameDisplay.textContent = '';
+            policyTypeDisplay.textContent = '';
+            policyStartDateDisplay.textContent = '';
+            policyEndDateDisplay.textContent = '';
+            jurisdictionDisplay.textContent = '';
+            coverageLimitDisplay.textContent = '';
+            vehicleInfoDisplay.textContent = '';
+        }
+
+        // Attach lookup function to the button
+        lookupPolicyBtn.addEventListener('click', lookupPolicy);
+
+        // --- Incident Location Autocomplete Logic ---
+        incidentLocationInput.addEventListener('input', () => {
+            const inputValue = incidentLocationInput.value.toLowerCase();
+            locationSuggestionsList.innerHTML = ''; // Clear previous suggestions
+
+            if (inputValue.length > 0) {
+                const filteredSuggestions = predefinedLocations.filter(location =>
+                    location.toLowerCase().includes(inputValue)
+                );
+
+                if (filteredSuggestions.length > 0) {
+                    filteredSuggestions.forEach(suggestion => {
+                        const li = document.createElement('li');
+                        li.textContent = suggestion;
+                        li.setAttribute('data-value', suggestion); // Store full value
+                        li.addEventListener('click', () => {
+                            incidentLocationInput.value = suggestion;
+                            locationSuggestionsList.style.display = 'none'; // Hide suggestions after selection
+                        });
+                        locationSuggestionsList.appendChild(li);
+                    });
+                    locationSuggestionsList.style.display = 'block'; // Show suggestions
+                } else {
+                    locationSuggestionsList.style.display = 'none'; // Hide if no matches
+                }
+            } else {
+                locationSuggestionsList.style.display = 'none'; // Hide if input is empty
+            }
+        });
+
+        // Hide suggestions when input loses focus, with a slight delay
+        incidentLocationInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                locationSuggestionsList.style.display = 'none';
+            }, 100); // Small delay to allow click event on suggestion to fire
+        });
+
+        // Show suggestions when input gains focus if there's content
+        incidentLocationInput.addEventListener('focus', () => {
+            if (incidentLocationInput.value.length > 0 && locationSuggestionsList.children.length > 0) {
+                locationSuggestionsList.style.display = 'block';
+            }
+        });
+
+        // --- Incident Description Copilot Suggestions Logic ---
+        copilotSuggestionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const suggestion = item.getAttribute('data-suggestion');
+                if (incidentDescriptionTextarea.value.length > 0 && !incidentDescriptionTextarea.value.endsWith(' ')) {
+                    incidentDescriptionTextarea.value += ' '; // Add space if text already exists
+                }
+                incidentDescriptionTextarea.value += suggestion;
+                // Optionally move cursor to end
+                incidentDescriptionTextarea.focus();
+                incidentDescriptionTextarea.selectionStart = incidentDescriptionTextarea.selectionEnd = incidentDescriptionTextarea.value.length;
+            });
+        });
+
+
+        // Event listener for "Start New FNOL" button
+        document.getElementById('start-new-fnol-btn').addEventListener('click', () => {
+            showPage('policy'); // Navigate to the first step of the claim process
+        });
+
+        // --- Submit FNOL Button Logic ---
+        submitFnolBtn.addEventListener('click', () => {
+            // In a real application, you'd send data to a backend here.
+            // For simulation, we just navigate to the success page.
+            showPage('success');
+        });
+
+        // --- Sidebar Toggle Logic ---
+        sidebarToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-collapsed');
+        });
+
+
+        // Initialize the view to the landing page on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings(); // Load and apply saved settings
+            showPage('landing');
+            renderUploadedFiles(); // Render initial state of uploaded files table
+
+            // Override showPage function to also update info snippets
+            const originalShowPage = showPage;
+            window.showPage = function(pageId) {
+                originalShowPage(pageId);
+                updateInfoSnippets(pageId);
+            };
+
+            // Initial call to show the correct info snippet for the landing page
+            updateInfoSnippets('landing');
+        });
+    </script>
+</body>
+</html>
