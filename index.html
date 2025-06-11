@@ -70,6 +70,19 @@
             border-color: color-mix(in srgb, var(--secondary-color) 85%, black) !important;
         }
 
+        /* NEW: Secondary Outline Button with Primary Color */
+        .btn-outline-primary {
+            background-color: transparent !important;
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border-color: var(--primary-color) !important;
+        }
+
         /* For success/warning/danger buttons */
         .btn-success { background-color: var(--success-color) !important; border-color: var(--success-color) !important; color: white !important;}
         .btn-warning { background-color: var(--warning-color) !important; border-color: var(--warning-color) !important; color: white !important;}
@@ -85,10 +98,69 @@
         .info-snippet-content ul li .info-icon { color: var(--primary-color) !important; }
         .info-snippet-content .info-message-box .icon { color: var(--primary-color) !important; }
 
-        /* Sidebar Logo Text Color */
+        /* Primary color for sidebar app name */
         #sidebar-logo-text {
             color: var(--primary-color) !important;
         }
+        /* Hover effects for sidebar navigation items and their icons */
+        #main-sidebar .nav-link-item:hover,
+        #main-sidebar .nav-link-item:hover .nav-link-icon {
+            background-color: color-mix(in srgb, var(--primary-color) 5%, white) !important;
+            color: var(--primary-color) !important; /* Text and icon color change on hover */
+        }
+        html[data-theme="dark"] #main-sidebar .nav-link-item:hover,
+        html[data-theme="dark"] #main-sidebar .nav-link-item:hover .nav-link-icon {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black) !important;
+            color: var(--primary-color) !important; /* Text and icon color change on hover */
+        }
+        /* Active sidebar navigation item */
+        #main-sidebar .nav-link-item.active-nav-link {
+            background-color: color-mix(in srgb, var(--primary-color) 10%, white) !important;
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+        html[data-theme="dark"] #main-sidebar .nav-link-item.active-nav-link {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black) !important;
+            color: var(--primary-color) !important;
+        }
+        #main-sidebar .nav-link-item.active-nav-link .nav-link-icon {
+            color: var(--primary-color) !important;
+        }
+
+        /* NEW: Header buttons hover state to use primary color */
+        header button.text-gray-600:hover,
+        header button.text-gray-600:hover i {
+            color: var(--primary-color) !important;
+        }
+
+
+        /* Radio buttons and Toggle switches to respect primary color */
+        .radio.radio-primary {
+            border-color: var(--primary-color) !important; /* Default border color for radio */
+        }
+        .radio.radio-primary:checked,
+        .radio.radio-primary:checked:hover,
+        .radio.radio-primary:checked:active {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            /* For the inner circle of the radio button */
+            --chkbg: var(--primary-color);
+            --chkborder: var(--primary-color);
+        }
+        .radio.radio-primary:focus-visible {
+            outline: 2px solid var(--primary-color); /* Focus outline */
+            outline-offset: 2px;
+        }
+
+        .toggle.toggle-primary:checked,
+        .toggle.toggle-primary:checked:hover,
+        .toggle.toggle-primary:checked:active {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        /* DaisyUI handles the `accent-color` for toggles and radios by default if primary color is set.
+           The above explicit rules ensure it definitely overrides. */
+
 
         /* Border radius for buttons and inputs */
         .btn {
@@ -178,35 +250,11 @@
             font-weight: 600;
             margin-right: 0.6rem;
             color: var(--primary-color);
-            position: relative; /* For nested elements */
         }
-        /* General Step Number/Icon/Checkmark Visibility */
-        .custom-step-number .step-digit { display: inline-block; } /* Default to show numbers */
-        .custom-step-number .step-icon { display: none; } /* Default to hide icons */
-        .custom-step-number .step-checkmark-core { display: none; } /* Default to hide checkmark */
-
-        /* Checkmark visibility for completed steps (general) */
-        .custom-step.completed .custom-step-number .step-digit,
-        .custom-step.completed .custom-step-number .step-icon {
-            display: none; /* Hide digit/icon when step is completed */
-        }
-        .custom-step.completed .custom-step-number .step-checkmark-core {
-            display: inline-block; /* Show checkmark when step is completed */
-            font-size: 1.15rem; /* Match number size */
-            color: white; /* Will be overridden by active/completed specific colors */
-        }
-
-        .custom-step-checkmark { /* Specific checkmark styling for default */
-            color: var(--success-color); /* Green color outside of .custom-step-number */
+        .custom-step-checkmark {
+            color: var(--success-color);
             margin-left: 0.5rem;
             font-size: 0.9rem;
-            position: static; /* Reset positioning */
-            transform: none;
-            display: inline-block; /* Ensure it's visible */
-        }
-
-        html[data-theme="dark"] .custom-step-number {
-            color: #ccc;
         }
         .custom-step:last-child {
             border-right: none;
@@ -238,24 +286,18 @@
         }
 
         /* Stepper Style: Dots */
-        .stepper-style-dots .custom-step {
-            flex-direction: column; /* Stack number above text */
-        }
         .stepper-style-dots .custom-step-number {
             border-radius: 9999px; /* full rounded */
-            width: 2.2rem; /* slightly larger dot */
-            height: 2.2rem;
+            width: 1.8rem;
+            height: 1.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--tertiary-color);
             color: white;
             font-size: 0.9rem;
-            margin-right: 0; /* Remove right margin for vertical stack */
-            margin-bottom: 0.4rem; /* Add bottom margin for vertical stack */
+            margin-right: 0.5rem;
             transition: background-color 0.2s ease, color 0.2s ease;
-            border: none; /* No border for the dot itself */
-            position: relative; /* For checkmark positioning */
         }
         html[data-theme="dark"] .stepper-style-dots .custom-step-number {
             background-color: #555;
@@ -264,198 +306,314 @@
         .stepper-style-dots .custom-step.active .custom-step-number {
             background-color: white;
             color: var(--primary-color);
-            border: 2px solid var(--primary-color); /* Primary border for active dot */
+            border: 2px solid var(--primary-color); /* Add border for active dot */
         }
         .stepper-style-dots .custom-step.completed .custom-step-number {
             background-color: var(--success-color);
             color: white;
         }
-        /* Checkmark within the dot for completed */
-        .stepper-style-dots .custom-step.completed .custom-step-number .step-checkmark-core {
-            display: inline-block; /* Show checkmark within the dot */
-            font-size: 1.15rem;
-            color: white;
-            position: static; /* Reset positioning */
-            transform: none;
+        .stepper-style-dots .custom-step.completed .custom-step-checkmark {
+            color: white; /* Make checkmark white for completed dots */
         }
-        .stepper-style-dots .custom-step.completed .custom-step-checkmark { /* Hide the external checkmark for dots */
-            display: none;
+        /* Stepper Style: Progress (conceptual - hides steps, assumes external progress bar) */
+        .stepper-style-progress .custom-step {
+            display: none; /* Hide individual steps */
         }
 
-
-        /* Stepper Style: Icons */
-        .stepper-style-icons .custom-step { flex-direction: column; }
-        .stepper-style-icons .custom-step-number .step-digit { display: none; }
-        .stepper-style-icons .custom-step-number .step-icon { display: inline-block; font-size: 1.8rem; }
-        .stepper-style-icons .custom-step-number {
-            margin-right: 0;
-            margin-bottom: 0.4rem;
-            background: none;
-            color: #605e5c;
-            border: none;
-            position: relative; /* For checkmark positioning */
+        /* Copilot Assistant / Info Snippet styling */
+        .info-snippet-card {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--field-border-radius); /* Use field radius for cards */
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            max-height: none;
+            z-index: 20;
         }
-        html[data-theme="dark"] .stepper-style-icons .custom-step-number { color: #ccc; }
-        .stepper-style-icons .custom-step.active .custom-step-number { color: var(--primary-color); }
-        .stepper-style-icons .custom-step.completed .custom-step-number { color: var(--success-color); }
-        .stepper-style-icons .custom-step span:not(.custom-step-number) { font-size: 0.85rem; text-transform: uppercase; }
-        /* Checkmark within the icon container for completed */
-        .stepper-style-icons .custom-step.completed .custom-step-number .step-checkmark-core {
-            display: inline-block;
-            font-size: 1.15rem;
-            color: white; /* Assuming icon background changes to success color */
-            position: absolute; /* Position slightly offset if needed */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: var(--success-color); /* Background for checkmark */
-            border-radius: 9999px;
-            padding: 0.2rem;
+        html[data-theme="dark"] .info-snippet-card {
+            background-color: #2a2a2a;
+            border-color: #3a3a3a;
         }
-        .stepper-style-icons .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external */
-
-
-        /* Stepper Style: Connecting Line */
-        .stepper-style-line .custom-step {
-            position: relative;
-            padding-left: 2rem;
-            padding-right: 2rem;
-            justify-content: flex-start;
-            border-right: none;
-        }
-        .stepper-style-line .custom-step:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: calc(100% - 1.5rem);
-            width: 3rem;
-            height: 2px;
-            background-color: #e0e0e0;
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-        html[data-theme="dark"] .stepper-style-line .custom-step:not(:last-child)::after { background-color: #555; }
-        .stepper-style-line .custom-step-number {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            border-radius: 9999px;
-            width: 2rem;
-            height: 2rem;
-            background-color: var(--tertiary-color);
-            color: white;
+        .info-snippet-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            z-index: 2;
-            border: 2px solid transparent;
+            gap: 0.75rem;
+            padding: 1rem;
+            background-color: color-mix(in srgb, var(--primary-color) 10%, white);
+            border-bottom: 1px solid color-mix(in srgb, var(--primary-color) 20%, white);
+            border-radius: var(--field-border-radius) var(--field-border-radius) 0 0; /* Use field radius for top corners */
         }
-        html[data-theme="dark"] .stepper-style-line .custom-step-number { background-color: #555; color: #eee; }
-        .stepper-style-line .custom-step-number .step-digit { display: inline-block; }
-        .stepper-style-line .custom-step-number .step-icon { display: none; }
-        .stepper-style-line .custom-step.active .custom-step-number {
-            background-color: white;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
+        html[data-theme="dark"] .info-snippet-header {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black);
+            border-color: color-mix(in srgb, var(--primary-color) 30%, black);
         }
-        .stepper-style-line .custom-step.completed .custom-step-number {
-            background-color: var(--success-color); /* Circle background */
-            color: white; /* Text color inside circle */
+        .info-snippet-header .svg-icon { /* Specific class for SVG icons in header */
+            width: 1.15rem; /* Smaller icon size */
+            height: 1.15rem; /* Smaller icon size */
+            /* fill is now handled by the SVG itself for specific icons that don't need to change with primary */
         }
-        /* Checkmark within the circle for completed line style */
-        .stepper-style-line .custom-step.completed .custom-step-number .step-checkmark-core {
-            display: inline-block;
-            font-size: 1.15rem;
-            color: white; /* Ensure checkmark is white */
-            position: static;
-            transform: none;
+        .info-snippet-header .title {
+            font-weight: 600;
+            color: #323130;
+            font-size: 0.95rem;
         }
-        .stepper-style-line .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external */
-
-
-        /* Stepper Style: Pill Buttons */
-        .stepper-style-pills .custom-step {
+        html[data-theme="dark"] .info-snippet-header .title {
+            color: #eee;
+        }
+        .info-snippet-content {
             flex: 1;
-            padding: 0.7rem 1.5rem;
-            margin: 0 0.2rem;
-            border-radius: 9999px;
-            background-color: #e0e0e0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+        }
+        .info-snippet-content p, .info-snippet-content ul li {
+            font-size: 0.875rem;
+        }
+        html[data-theme="dark"] .info-snippet-content p, html[data-theme="dark"] .info-snippet-content ul li {
+            color: #ccc;
+        }
+        .info-snippet-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-snippet-content ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+            color: #323130;
+            line-height: 1.4;
+        }
+        .info-snippet-content ul li .check-icon {
+            color: var(--success-color);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        .info-snippet-content ul li .warning-icon {
+            color: var(--warning-color);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        .info-snippet-content blockquote {
+            background-color: #f3f2f1;
+            border-left: 4px solid var(--primary-color);
+            padding: 0.75rem 1rem;
+            border-radius: 0.25rem;
+            font-style: italic;
+            color: #323130;
+            font-size: 0.85rem;
+        }
+        html[data-theme="dark"] .info-snippet-content blockquote {
+            background-color: #3a3a3a;
+            color: #eee;
+        }
+        html[data-theme="dark"] .info-snippet-content blockquote footer {
+            color: #ccc;
+        }
+        .info-snippet-content blockquote footer {
+            font-size: 0.75rem;
             color: #605e5c;
-            border: none;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-            border-right: none;
-            display: flex; /* Ensure flex for content centering if needed */
+            margin-top: 0.4rem;
+        }
+        .info-snippet-content .progress-bar-container {
+            background-color: #e0e0e0;
+            border-radius: 9999px;
+            height: 0.625rem;
+            width: 100%;
+        }
+        html[data-theme="dark"] .info-snippet-content .progress-bar-container {
+            background-color: #555;
+        }
+        .info-snippet-content .progress-bar-fill {
+            background-color: var(--primary-color);
+            height: 100%;
+            border-radius: 9999px;
+        }
+        .info-snippet-content .info-message-box {
+            background-color: color-mix(in srgb, var(--primary-color) 10%, white);
+            border: 1px solid color-mix(in srgb, var(--primary-color) 20%, white);
+            padding: 0.75rem 1rem;
+            border-radius: var(--field-border-radius); /* Use field radius for message boxes */
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: #323130;
+            font-size: 0.875rem;
+        }
+        html[data-theme="dark"] .info-snippet-content .info-message-box {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black);
+            border-color: color-mix(in srgb, var(--primary-color) 30%, black);
+            color: #eee;
+        }
+
+        .copilot-suggestions-container {
+            background-color: color-mix(in srgb, var(--primary-color) 10%, white);
+            border: 1px solid color-mix(in srgb, var(--primary-color) 20%, white);
+            border-radius: var(--field-border-radius); /* Use field radius for suggestions container */
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        html[data-theme="dark"] .copilot-suggestions-container {
+            background-color: color-mix(in srgb, var(--primary-color) 20%, black);
+            border-color: color-mix(in srgb, var(--primary-color) 30%, black);
+        }
+        html[data-theme="dark"] .copilot-suggestions-container .header {
+            color: #eee;
+        }
+        .copilot-suggestions-container .header {
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 0.75rem;
+            display: flex;
             align-items: center;
+            gap: 0.5rem;
+        }
+        .copilot-suggestion-item {
+            background-color: #ffffff;
+            border: 1px solid #c8c6c4;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #323130;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            white-space: nowrap;
+        }
+        html[data-theme="dark"] .copilot-suggestion-item {
+            background-color: #3a3a3a;
+            border-color: #555;
+            color: #eee;
+        }
+        .copilot-suggestion-item:hover {
+            background-color: #f3f2f1;
+            border-color: var(--primary-color);
+        }
+        html[data-theme="dark"] .copilot-suggestion-item:hover {
+            background-color: #4a4a4a;
+            border-color: var(--primary-color);
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            z-index: 10;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--field-border-radius); /* Use field radius for autocomplete suggestions */
+            box-shadow: var(--box-shadow);
+            max-height: 200px;
+            overflow-y: auto;
+            width: calc(100% - 2px);
+            left: 1px;
+            top: 100%;
+            display: none;
+        }
+        html[data-theme="dark"] .autocomplete-suggestions {
+            background-color: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        .autocomplete-suggestions li {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #323130;
+        }
+        html[data-theme="dark"] .autocomplete-suggestions li {
+            color: #eee;
+        }
+        .autocomplete-suggestions li:hover {
+            background-color: #f3f2f1;
+        }
+        html[data-theme="dark"] .autocomplete-suggestions li:hover {
+            background-color: #3a3a3a;
+        }
+
+        /* Sidebar collapsed styles */
+        #main-sidebar {
+            width: 16rem;
+            transition: width 0.3s ease;
+            background-color: #ffffff;
+            border-right: 1px solid #e0e0e0;
+        }
+        html[data-theme="dark"] #main-sidebar {
+            background-color: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+        #main-sidebar .mb-6 {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #edebe9;
+        }
+        html[data-theme="dark"] #main-sidebar .mb-6 {
+            border-bottom: 1px solid #3a3a3a;
+        }
+        #main-sidebar .nav-item-text {
+            opacity: 1;
+            transition: opacity 0.3s ease, width 0.3s ease;
+            width: auto;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        #main-sidebar .nav-link-item {
+            justify-content: flex-start;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            color: #323130;
+        }
+        html[data-theme="dark"] #main-sidebar .nav-link-item {
+            color: #eee;
+        }
+        /* Moved hover styles to general overrides for primary color consistency */
+        #main-sidebar .nav-link-icon {
+            margin-right: 0.75rem;
+            transition: margin-right 0.3s ease;
+            color: #605e5c;
+        }
+        html[data-theme="dark"] #main-sidebar .nav-link-icon {
+            color: #ccc;
+        }
+        #main-sidebar .uppercase {
+            color: #605e5c;
+            padding-left: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        html[data-theme="dark"] #main-sidebar .uppercase {
+            color: #ccc;
+        }
+        body.sidebar-collapsed #main-sidebar {
+            width: 4rem;
+        }
+        body.sidebar-collapsed #main-sidebar .nav-item-text {
+            opacity: 0;
+            width: 0;
+            padding-left: 0;
+        }
+        body.sidebar-collapsed #main-sidebar .nav-link-item {
+            justify-content: center;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        body.sidebar-collapsed #main-sidebar .nav-link-icon {
+            margin-right: 0;
+        }
+        body.sidebar-collapsed #sidebar-logo-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        body.sidebar-collapsed #sidebar-logo-img {
+            margin-right: 0;
+        }
+        body.sidebar-collapsed #sidebar-header-div {
             justify-content: center;
         }
-        html[data-theme="dark"] .stepper-style-pills .custom-step { background-color: #3a3a3a; color: #eee; }
-        .stepper-style-pills .custom-step:first-child { margin-left: 0; }
-        .stepper-style-pills .custom-step:last-child { margin-right: 0; }
-        .stepper-style-pills .custom-step-number {
-            display: none; /* Hide numbers/icons in pills entirely */
-        }
-        .stepper-style-pills .custom-step.active {
-            background-color: var(--primary-color);
-            color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .stepper-style-pills .custom-step.completed {
-            background-color: var(--success-color);
-            color: white;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .stepper-style-pills .custom-step.completed .custom-step-checkmark { display: none; } /* Hide external checkmark */
-        .stepper-style-pills .custom-step:not(.active):not(.completed):hover {
-            background-color: #c8c6c4;
-        }
-        html[data-theme="dark"] .stepper-style-pills .custom-step:not(.active):not(.completed):hover { background-color: #555; }
-
-        /* Radio Button and Toggle Switch Coloring */
-        /* For DaisyUI radio buttons (and checkboxes implicitly) */
-        .radio {
-            --chkbg: var(--primary-color); /* For the checked background */
-            --bc: #d1d5db; /* Default border color for unchecked */
-            border-color: var(--bc);
-        }
-        html[data-theme="dark"] .radio {
-            --bc: #555;
-        }
-        .radio:checked {
-            background-color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
-        }
-        /* Ensure the inner circle is white for contrast */
-        .radio:checked:after {
-            background-color: white !important;
-        }
-        .radio:focus {
-            outline-color: var(--primary-color); /* Ensure focus outline matches */
-        }
-
-        /* For DaisyUI toggle switches */
-        .toggle {
-            --tglbg: #d1d5db; /* Default unchecked background */
-            border-color: #d1d5db; /* Default unchecked border */
-        }
-        html[data-theme="dark"] .toggle {
-            --tglbg: #555; /* Dark mode unchecked background */
-            border-color: #777; /* Dark mode unchecked border */
-        }
-        .toggle:checked {
-            background-color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important; /* Ensure border also changes */
-        }
-        /* This is the actual 'thumb' part of the toggle */
-        .toggle:checked:after {
-            background-color: white !important; /* Ensure the thumb is white on colored background */
-        }
-        .toggle:focus {
-             outline-color: var(--primary-color); /* Ensure focus outline matches */
-        }
-
         /* Top Header Bar */
         header {
             background-color: #ffffff;
@@ -541,7 +699,6 @@
         .border-gray-300 { border-color: #d1d5db; }
         html[data-theme="dark"] .border-gray-300 { border-color: #555; }
 
-
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 flex h-screen overflow-hidden">
@@ -551,23 +708,23 @@
         <div id="sidebar-header-div" class="mb-6 flex items-center space-x-2">
             <!-- Main App Logo (D365 placeholder) -->
             <img id="sidebar-logo-img" src="https://placehold.co/32x32/0078D4/ffffff?text=D365" alt="Dynamics 365 Logo" class="rounded">
-            <span id="sidebar-logo-text" class="font-semibold text-lg text-blue-800">WestGlen Claims</span>
+            <span id="sidebar-logo-text" class="font-semibold text-lg">WestGlen Claims</span>
         </div>
 
         <nav class="flex-1">
             <ul class="space-y-1">
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md" onclick="showPage('landing')">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md" onclick="showPage('landing')">
                         <i class="fas fa-home nav-link-icon mr-3"></i> <span class="nav-item-text">Home</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-history nav-link-icon mr-3"></i> <span class="nav-item-text">Recent</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-thumbtack nav-link-icon mr-3"></i> <span class="nav-item-text">Pinned</span>
                     </a>
                 </li>
@@ -576,17 +733,17 @@
             <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">My Work</span></div>
             <ul class="space-y-1">
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-tachometer-alt nav-link-icon mr-3"></i> <span class="nav-item-text">Dashboards</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-tasks nav-link-icon mr-3"></i> <span class="nav-item-text">Activities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-handshake nav-link-icon mr-3"></i> <span class="nav-item-text">Deal Manager</span>
                     </a>
                 </li>
@@ -595,12 +752,12 @@
             <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">Customers</span></div>
             <ul class="space-y-1">
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-building nav-link-icon mr-3"></i> <span class="nav-item-text">Accounts</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-user-friends nav-link-icon mr-3"></i> <span class="nav-item-text">Contacts</span>
                     </a>
                 </li>
@@ -609,17 +766,17 @@
             <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">Sales</span></div>
             <ul class="space-y-1">
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-lightbulb nav-link-icon mr-3"></i> <span class="nav-item-text">Leads</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 bg-blue-50 text-blue-700 font-medium rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 active-nav-link font-medium rounded-md">
                         <i class="fas fa-briefcase nav-link-icon mr-3"></i> <span class="nav-item-text">Opportunities</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md">
                         <i class="fas fa-users nav-link-icon mr-3"></i> <span class="nav-item-text">Competitors</span>
                     </a>
                 </li>
@@ -627,7 +784,7 @@
             <div class="mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase px-2"><span class="nav-item-text">App Settings</span></div>
             <ul class="space-y-1">
                 <li>
-                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-700 rounded-md" onclick="showPage('settings')">
+                    <a href="#" class="nav-link-item flex items-center p-2 text-sm text-gray-700 rounded-md" onclick="showPage('settings')">
                         <i class="fas fa-cog nav-link-icon mr-3"></i> <span class="nav-item-text">Settings</span>
                     </a>
                 </li>
@@ -681,38 +838,10 @@
             <!-- Stepper Component (Initially hidden) -->
             <div class="w-full mb-6 bg-white shadow-sm border border-gray-200" id="fnol-stepper">
                 <div class="flex rounded-lg overflow-hidden" id="stepper-container">
-                    <div class="custom-step" data-step-id="policy" onclick="showPage('policy')">
-                        <span class="custom-step-number">
-                            <span class="step-digit">1</span>
-                            <i class="fas fa-file-invoice step-icon"></i>
-                            <i class="fas fa-check-circle step-checkmark-core"></i>
-                        </span>
-                        Policy
-                    </div>
-                    <div class="custom-step" data-step-id="details" onclick="showPage('details')">
-                        <span class="custom-step-number">
-                            <span class="step-digit">2</span>
-                            <i class="fas fa-info-circle step-icon"></i>
-                            <i class="fas fa-check-circle step-checkmark-core"></i>
-                        </span>
-                        Details
-                    </div>
-                    <div class="custom-step" data-step-id="documents" onclick="showPage('documents')">
-                        <span class="custom-step-number">
-                            <span class="step-digit">3</span>
-                            <i class="fas fa-folder-open step-icon"></i>
-                            <i class="fas fa-check-circle step-checkmark-core"></i>
-                        </span>
-                        Documents
-                    </div>
-                    <div class="custom-step" data-step-id="review" onclick="showPage('review')">
-                        <span class="custom-step-number">
-                            <span class="step-digit">4</span>
-                            <i class="fas fa-check-circle step-icon"></i>
-                            <i class="fas fa-check-circle step-checkmark-core"></i>
-                        </span>
-                        Review & Submit
-                    </div>
+                    <div class="custom-step" data-step-id="policy" onclick="showPage('policy')"><span class="custom-step-number">1</span>Policy</div>
+                    <div class="custom-step" data-step-id="details" onclick="showPage('details')"><span class="custom-step-number">2</span>Details</div>
+                    <div class="custom-step" data-step-id="documents" onclick="showPage('documents')"><span class="custom-step-number">3</span>Documents</div>
+                    <div class="custom-step" data-step-id="review" onclick="showPage('review')"><span class="custom-step-number">4</span>Review & Submit</div>
                 </div>
             </div>
 
@@ -725,9 +854,15 @@
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-800 mb-2">First Notice of Loss</h2>
                         <p class="text-gray-600 mb-4">Submit a new claim by providing details about the incident, policy information, and supporting documentation.</p>
-                        <button id="start-new-fnol-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
-                            <i class="fas fa-plus mr-2"></i> Start New FNOL
-                        </button>
+                        <div class="flex gap-4">
+                            <button id="start-new-fnol-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Start New FNOL
+                            </button>
+                            <!-- New Secondary Outline Button -->
+                            <button class="font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-outline-primary">
+                                <i class="fas fa-info-circle mr-2"></i> Learn More
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Recent Claims Section -->
@@ -837,7 +972,7 @@
                     <div id="copilot-info-landing" class="info-snippet-card">
                         <div class="info-snippet-header">
                             <!-- SVG logo for AI -->
-                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="svg-icon" width="1322.9" height="1147.5" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
                                 <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
                             </svg>
                             <span class="title">Copilot Assistant</span>
@@ -902,7 +1037,7 @@
                                 <label for="policy-number" class="block text-sm font-medium text-gray-700 mb-1">Policy Number</label>
                                 <div class="flex">
                                     <input type="text" id="policy-number" placeholder="Enter policy number (e.g., POL-2023-12345)" class="flex-1 block w-full border border-gray-300 rounded-l-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
-                                    <button id="lookup-policy-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-r-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                    <button id="lookup-policy-btn" class="text-white font-medium py-2 px-4 rounded-r-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
                                         Look Up Policy
                                     </button>
                                 </div>
@@ -951,7 +1086,7 @@
                             <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('landing')">
                                 Back
                             </button>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('details')">
+                            <button class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('details')">
                                 Continue to Details →
                             </button>
                         </div>
@@ -964,7 +1099,7 @@
                     <div id="copilot-info-policy" class="info-snippet-card">
                         <div class="info-snippet-header">
                             <!-- SVG logo for AI -->
-                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="svg-icon" width="1322.9" height="1147.5" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
                                 <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
                             </svg>
                             <span class="title">Copilot Assistant</span>
@@ -1070,7 +1205,7 @@
                             <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('policy')">
                                 Previous: Policy
                             </button>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('documents')">
+                            <button class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('documents')">
                                 Next: Upload Documents →
                             </button>
                         </div>
@@ -1083,7 +1218,7 @@
                     <div id="copilot-info-details" class="info-snippet-card">
                         <div class="info-snippet-header">
                             <!-- SVG logo for AI -->
-                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="svg-icon" width="1322.9" height="1147.5" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
                                 <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
                             </svg>
                             <span class="title">Copilot Assistant</span>
@@ -1161,7 +1296,7 @@
                             <p class="text-gray-500 mb-4">or</p>
                             <!-- Hidden file input -->
                             <input type="file" id="file-upload-input" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden">
-                            <button id="browse-files-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                            <button id="browse-files-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
                                 <i class="fas fa-folder-open mr-2"></i> Browse Files
                             </button>
                             <p class="mt-4 text-xs text-gray-500">Max 10 files, each up to 20MB.</p>
@@ -1188,7 +1323,7 @@
                             <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('details')">
                                 Previous: Details
                             </button>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('review')">
+                            <button class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary" onclick="showPage('review')">
                                 Review & Submit →
                             </button>
                         </div>
@@ -1201,7 +1336,7 @@
                     <div id="copilot-info-documents" class="info-snippet-card">
                         <div class="info-snippet-header">
                             <!-- SVG logo for AI -->
-                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="svg-icon" width="1322.9" height="1147.5" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
                                 <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
                             </svg>
                             <span class="title">Doc Assistant</span>
@@ -1349,7 +1484,7 @@
                             <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary" onclick="showPage('documents')">
                                 Previous: Documents
                             </button>
-                            <button id="submit-fnol-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                            <button id="submit-fnol-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
                                 Submit FNOL →
                             </button>
                         </div>
@@ -1362,7 +1497,7 @@
                     <div id="copilot-info-review" class="info-snippet-card">
                         <div class="info-snippet-header">
                             <!-- SVG logo for AI -->
-                            <svg class="svg-icon" width="1.15rem" height="1.15rem" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="svg-icon" width="1322.9" height="1147.5" viewBox="0 0 1322.9 1147.5" fill="#0078D4" xmlns="http://www.w3.org/2000/svg">
                                 <path d="m711.19 265.2c-27.333 0-46.933 3.07-58.8 9.33 27.067-80.267 47.6-210.13 168-210.13 114.93 0 108.4 138.27 157.87 200.8zm107.33 112.93c-35.467 125.2-70 251.2-110.13 375.33-12.133 36.4-45.733 61.6-84 61.6h-136.27c9.3333-14 16.8-28.933 21.467-45.733 35.467-125.07 70-251.07 110.13-375.33 12.133-36.4 45.733-61.6 84-61.6h136.27c-9.3333 14-16.8 28.934-21.467 45.734m-316.13 704.8c-114.93 0-108.4-138.13-157.87-200.67h267.07c27.467 0 47.067-3.07 58.8-9.33-27.067 80.266-47.6 210-168 210m777.47-758.93h0.93c-32.667-38.266-82.267-57.866-146.67-57.866h-36.4c-34.533-2.8-65.333-26.134-76.533-58.8l-36.4-103.6c-21.463-61.737-80.263-103.74-145.73-103.74h-475.07c-175.6 0-251.2 225.07-292.27 361.33-38.267 127.07-126 341.73-24.267 462.13 46.667 55.067 116.67 57.867 183.07 57.867 34.533 2.8 65.333 26.133 76.533 58.8l36.4 103.6c21.467 61.733 80.267 103.73 145.6 103.73h475.2c175.47 0 251.07-225.07 292.27-361.33 30.8-100.8 68.133-224.93 66.267-324.8 0-50.534-11.2-100-42.933-137.33"/>
                             </svg>
                             <span class="title">Copilot Summary</span>
@@ -1543,18 +1678,11 @@
                                     <span class="ml-2 text-gray-700">Dots</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="radio" name="stepper-style" value="icons" class="radio radio-primary">
-                                    <span class="ml-2 text-gray-700">Icons</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="stepper-style" value="line" class="radio radio-primary">
-                                    <span class="ml-2 text-gray-700">Connecting Line</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="stepper-style" value="pills" class="radio radio-primary">
-                                    <span class="ml-2 text-gray-700">Pill Buttons</span>
+                                    <input type="radio" name="stepper-style" value="progress" class="radio radio-primary">
+                                    <span class="ml-2 text-gray-700">Progress Bar</span>
                                 </label>
                             </div>
+                            <p class="text-xs text-gray-500 mt-2">Note: "Progress Bar" option hides individual steps and conceptually represents a single overall progress.</p>
                         </div>
 
                         <!-- Theme Templates -->
@@ -1564,7 +1692,7 @@
                                 <label for="template-name-input" class="block text-sm font-medium text-gray-700 mb-1">Template Name</label>
                                 <input type="text" id="template-name-input" placeholder="e.g., My Dark Theme" class="block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2 input">
                             </div>
-                            <button id="save-template-btn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-success mb-4">
+                            <button id="save-template-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-success mb-4">
                                 <i class="fas fa-save mr-2"></i> Save Current as Template
                             </button>
 
@@ -1574,10 +1702,10 @@
                                     <select id="template-select" class="select select-bordered w-full text-sm flex-1">
                                         <option value="">-- Select a saved template --</option>
                                     </select>
-                                    <button id="apply-template-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                                    <button id="apply-template-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
                                         Apply
                                     </button>
-                                    <button id="delete-template-btn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-error">
+                                    <button id="delete-template-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-error">
                                         Delete
                                     </button>
                                 </div>
@@ -1591,7 +1719,7 @@
                         <button id="revert-defaults-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out btn btn-secondary">
                             Revert to Defaults
                         </button>
-                        <button id="save-settings-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
+                        <button id="save-settings-btn" class="text-white font-medium py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out btn btn-primary">
                             Save Changes
                         </button>
                     </div>
@@ -1835,12 +1963,35 @@
             }
             // Re-apply stepper active state and checks for the current page
             updateStepper(document.querySelector('.page-content:not([style*="display: none"])')?.id.replace('-page', '') || 'landing');
+
+            // Update active state for sidebar links
+            sidebarNavItems.forEach(item => {
+                item.classList.remove('active-nav-link');
+                const pageId = item.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+                if (pageId && pageId === currentPageIdFromURL()) { // Use a helper to get current page from URL/state
+                    item.classList.add('active-nav-link');
+                }
+            });
         }
+
+        // Helper function to get current page ID (simplified for this app's navigation)
+        function currentPageIdFromURL() {
+            // In this app, we rely on the currently displayed page.
+            // A more robust solution for a real app might use URL hash or a routing library.
+            for (const page of pages) {
+                if (document.getElementById(`${page}-page`) && document.getElementById(`${page}-page`).style.display !== 'none') {
+                    return page;
+                }
+            }
+            return 'landing'; // Default to landing if nothing is explicitly shown
+        }
+
 
         // Function to save settings to local storage
         function saveSettings() {
             localStorage.setItem('appSettings', JSON.stringify(currentSettings));
-            alert('Settings saved successfully!'); // Use a simple alert for demonstration
+            // Instead of alert, use a custom message box for better UX
+            showMessage('Settings saved successfully!', 'success');
         }
 
         // Function to revert to default settings
@@ -1848,7 +1999,8 @@
             localStorage.removeItem('appSettings'); // Clear saved settings
             currentSettings = { ...defaultSettings }; // Reset to default
             loadSettings(); // Load defaults and apply
-            alert('Settings reverted to defaults.'); // Use a simple alert for demonstration
+            // Instead of alert, use a custom message box for better UX
+            showMessage('Settings reverted to defaults.', 'info');
         }
 
         // --- Theme Template Functions ---
@@ -1865,31 +2017,34 @@
         function saveThemeTemplate() {
             const templateName = templateNameInput.value.trim();
             if (!templateName) {
-                alert('Please enter a name for your template.');
+                showMessage('Please enter a name for your template.', 'warning');
                 return;
             }
 
             // Check if a template with this name already exists
             const existingIndex = savedThemes.findIndex(theme => theme.name === templateName);
             if (existingIndex > -1) {
-                if (!confirm(`A template named "${templateName}" already exists. Do you want to overwrite it?`)) {
-                    return;
-                }
-                savedThemes[existingIndex] = { name: templateName, settings: { ...currentSettings } };
+                // Use custom confirmation for overwriting
+                showConfirm(`A template named "${templateName}" already exists. Do you want to overwrite it?`, () => {
+                    savedThemes[existingIndex] = { name: templateName, settings: { ...currentSettings } };
+                    localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
+                    populateThemeSelect();
+                    templateNameInput.value = ''; // Clear input after saving
+                    showMessage(`Template "${templateName}" overwritten successfully!`, 'success');
+                });
             } else {
                 savedThemes.push({ name: templateName, settings: { ...currentSettings } });
+                localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
+                populateThemeSelect();
+                templateNameInput.value = ''; // Clear input after saving
+                showMessage(`Template "${templateName}" saved successfully!`, 'success');
             }
-
-            localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
-            populateThemeSelect();
-            templateNameInput.value = ''; // Clear input after saving
-            alert(`Template "${templateName}" saved successfully!`);
         }
 
         function applyThemeTemplate() {
             const selectedIndex = templateSelect.value;
             if (selectedIndex === "") {
-                alert('Please select a template to apply.');
+                showMessage('Please select a template to apply.', 'warning');
                 return;
             }
 
@@ -1898,25 +2053,123 @@
                 currentSettings = { ...themeToApply.settings };
                 populateSettingsControls(); // Update UI controls
                 applySettings(); // Apply settings to the app
-                alert(`Template "${themeToApply.name}" applied successfully!`);
+                showMessage(`Template "${themeToApply.name}" applied successfully!`, 'success');
             }
         }
 
         function deleteThemeTemplate() {
             const selectedIndex = templateSelect.value;
             if (selectedIndex === "") {
-                alert('Please select a template to delete.');
+                showMessage('Please select a template to delete.', 'warning');
                 return;
             }
 
             const themeName = savedThemes[parseInt(selectedIndex)].name;
-            if (confirm(`Are you sure you want to delete the template "${themeName}"?`)) {
+            showConfirm(`Are you sure you want to delete the template "${themeName}"?`, () => {
                 savedThemes.splice(parseInt(selectedIndex), 1);
                 localStorage.setItem('savedThemes', JSON.stringify(savedThemes));
                 populateThemeSelect();
                 templateSelect.value = ""; // Reset dropdown
-                alert(`Template "${themeName}" deleted.`);
+                showMessage(`Template "${themeName}" deleted.`, 'info');
+            });
+        }
+
+        // --- Custom Message Box and Confirmation Dialogs ---
+        // Create a simple message box for alerts/confirmations
+        function createMessageBox() {
+            const messageBox = document.createElement('div');
+            messageBox.id = 'custom-message-box';
+            messageBox.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden';
+            messageBox.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+                    <div id="message-box-icon" class="text-4xl mb-4"></div>
+                    <p id="message-box-text" class="text-gray-800 text-lg font-medium mb-4"></p>
+                    <div id="message-box-actions" class="flex justify-center gap-4">
+                        <button id="message-box-ok" class="btn btn-primary">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(messageBox);
+        }
+
+        function showMessage(message, type = 'info') {
+            const messageBox = document.getElementById('custom-message-box');
+            const messageText = document.getElementById('message-box-text');
+            const messageIcon = document.getElementById('message-box-icon');
+            const messageActions = document.getElementById('message-box-actions');
+            const okButton = document.getElementById('message-box-ok');
+
+            messageText.textContent = message;
+            messageActions.innerHTML = ''; // Clear previous buttons
+
+            messageIcon.className = 'text-4xl mb-4'; // Reset icon classes
+            switch(type) {
+                case 'success':
+                    messageIcon.innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    okButton.className = 'btn btn-primary';
+                    break;
+                case 'warning':
+                    messageIcon.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i>';
+                    okButton.className = 'btn btn-warning';
+                    break;
+                case 'error':
+                    messageIcon.innerHTML = '<i class="fas fa-times-circle text-red-500"></i>';
+                    okButton.className = 'btn btn-error';
+                    break;
+                case 'info':
+                default:
+                    messageIcon.innerHTML = '<i class="fas fa-info-circle text-blue-500"></i>';
+                    okButton.className = 'btn btn-secondary';
+                    break;
             }
+
+            messageActions.appendChild(okButton.cloneNode(true)); // Clone to remove old listeners
+            const newOkButton = messageActions.querySelector('#message-box-ok');
+            newOkButton.addEventListener('click', () => {
+                messageBox.classList.add('hidden');
+            }, { once: true }); // Ensure listener is only called once
+
+            messageBox.classList.remove('hidden');
+        }
+
+        function showConfirm(message, onConfirm, onCancel = () => {}) {
+            const messageBox = document.getElementById('custom-message-box');
+            const messageText = document.getElementById('message-box-text');
+            const messageIcon = document.getElementById('message-box-icon');
+            const messageActions = document.getElementById('message-box-actions');
+
+            messageText.textContent = message;
+            messageIcon.className = 'text-4xl mb-4';
+            messageIcon.innerHTML = '<i class="fas fa-question-circle text-blue-500"></i>'; // Question icon for confirm
+
+            messageActions.innerHTML = `
+                <button id="confirm-yes-btn" class="btn btn-primary">Yes</button>
+                <button id="confirm-no-btn" class="btn btn-secondary">No</button>
+            `;
+
+            const yesButton = document.getElementById('confirm-yes-btn');
+            const noButton = document.getElementById('confirm-no-btn');
+
+            const cleanup = () => {
+                messageBox.classList.add('hidden');
+                yesButton.removeEventListener('click', onYes);
+                noButton.removeEventListener('click', onNo);
+            };
+
+            const onYes = () => {
+                onConfirm();
+                cleanup();
+            };
+
+            const onNo = () => {
+                onCancel();
+                cleanup();
+            };
+
+            yesButton.addEventListener('click', onYes);
+            noButton.addEventListener('click', onNo);
+
+            messageBox.classList.remove('hidden');
         }
 
 
@@ -2010,6 +2263,17 @@
 
                 // Update info snippets for the new page
                 updateInfoSnippets(pageId);
+
+                // Update sidebar active link
+                sidebarNavItems.forEach(item => {
+                    item.classList.remove('active-nav-link');
+                    const itemPageId = item.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+                    if (itemPageId === pageId) {
+                        item.classList.add('active-nav-link');
+                    }
+                });
+
+
             } else {
                 console.error(`Page with ID '${pageId}-page' not found.`);
             }
@@ -2089,20 +2353,10 @@
         // Function to update the stepper's active state and add numbers and checkmarks
         function updateStepper(pageId) {
             stepperSteps.forEach(step => {
-                step.classList.remove('active', 'completed');
-                // Hide all internal elements first for a clean slate
-                const stepDigit = step.querySelector('.step-digit');
-                const stepIcon = step.querySelector('.step-icon');
-                const stepCheckmarkCore = step.querySelector('.step-checkmark-core');
-
-                if (stepDigit) stepDigit.style.display = 'none';
-                if (stepIcon) stepIcon.style.display = 'none';
-                if (stepCheckmarkCore) stepCheckmarkCore.style.display = 'none';
-
-                // Remove any old external checkmarks that might have been added by previous logic
-                const existingExternalCheckmark = step.querySelector('.custom-step-checkmark:not(.step-checkmark-core)');
-                if (existingExternalCheckmark) {
-                    existingExternalCheckmark.remove();
+                step.classList.remove('active', 'completed'); // Remove active/completed classes from all steps
+                const existingCheckmark = step.querySelector('.custom-step-checkmark');
+                if (existingCheckmark) {
+                    existingCheckmark.remove(); // Remove old checkmarks
                 }
             });
 
@@ -2112,30 +2366,23 @@
                 const stepPageId = step.getAttribute('data-step-id');
                 const stepPageIndex = pages.indexOf(stepPageId);
 
-                const stepDigit = step.querySelector('.step-digit');
-                const stepIcon = step.querySelector('.step-icon');
-                const stepCheckmarkCore = step.querySelector('.step-checkmark-core');
+                // Add numbers to steps
+                let stepNumberSpan = step.querySelector('.custom-step-number');
+                if (!stepNumberSpan) {
+                    stepNumberSpan = document.createElement('span');
+                    stepNumberSpan.classList.add('custom-step-number');
+                    step.prepend(stepNumberSpan);
+                }
+                stepNumberSpan.textContent = `${index + 1}`;
 
 
                 if (stepPageIndex < currentPageIndex) {
                     step.classList.add('completed');
-                    if (stepCheckmarkCore) stepCheckmarkCore.style.display = 'inline-block'; // Show checkmark for completed
-
+                    const checkmarkIcon = document.createElement('i');
+                    checkmarkIcon.classList.add('fas', 'fa-check-circle', 'custom-step-checkmark');
+                    step.appendChild(checkmarkIcon); // Add checkmark for completed steps
                 } else if (stepPageIndex === currentPageIndex) {
                     step.classList.add('active');
-                    // For active, show icon or digit based on style, unless it's pill style
-                    if (currentSettings.stepperStyle === 'icons' && stepIcon) {
-                        stepIcon.style.display = 'inline-block';
-                    } else if (stepDigit) { // Default or dots or line
-                        stepDigit.style.display = 'inline-block';
-                    }
-
-                } else { // Future steps
-                    if (currentSettings.stepperStyle === 'icons' && stepIcon) {
-                        stepIcon.style.display = 'inline-block';
-                    } else if (stepDigit) { // Default or dots or line
-                        stepDigit.style.display = 'inline-block';
-                    }
                 }
             });
         }
@@ -2406,16 +2653,10 @@
 
         // Initialize the view to the landing page on load
         document.addEventListener('DOMContentLoaded', () => {
+            createMessageBox(); // Create the custom message box element
             loadSettings(); // Load and apply saved settings
             showPage('landing');
             renderUploadedFiles(); // Render initial state of uploaded files table
-
-            // Override showPage function to also update info snippets
-            const originalShowPage = showPage;
-            window.showPage = function(pageId) {
-                originalShowPage(pageId);
-                updateInfoSnippets(pageId);
-            };
 
             // Initial call to show the correct info snippet for the landing page
             updateInfoSnippets('landing');
